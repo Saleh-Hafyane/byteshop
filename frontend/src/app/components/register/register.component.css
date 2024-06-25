@@ -1,0 +1,27 @@
+.register-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.register-container h2 {
+  color: #333;
+}
+
+.register-container .form-control {
+  border-radius: 5px;
+}
+
+.register-container .btn {
+  border-radius: 5px;
+}
+.btn{
+  background: #240A34;
+  color:#FFEDD8 ;
+}
+.btn:hover{
+  background-color: #891652;
+}

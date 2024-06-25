@@ -1,0 +1,88 @@
+/*
+ * ----------------------------
+ * Products List
+ * ----------------------------
+ */
+
+
+/* Main Content Styles */
+.main-content {
+  padding: 20px 0;
+}
+
+.section-content-p30 {
+  padding: 30px 15px;
+}
+
+.container-fluid {
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* Product Box Styles */
+.product-box {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  padding: 15px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.product-box img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.product-box h1 {
+  font-size: 18px;
+  color: #333;
+  margin: 10px 0;
+  background-color: #FFEDD8;
+
+}
+a{
+  text-decoration: none;
+}
+
+.product-box .price {
+  font-size: 18px;
+  color: #28a745;
+  margin-bottom: 15px;
+}
+
+.product-box .btn {
+  background-color: #240A34;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.product-box .btn:hover {
+  background-color: #891652;
+}
+
+
+/* Footer Pagination Styles */
+.footer-pagination {
+  margin-top: 35px;
+}
+
+.ngb-pagination{
+  padding-left: 30%;
+}
+
+
+

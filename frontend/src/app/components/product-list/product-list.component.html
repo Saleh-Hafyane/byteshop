@@ -1,0 +1,64 @@
+<div class="main-content">
+  <div class="section-content section-content-p30">
+    <div class="container-fluid">
+      <div class="row">
+        <div *ngFor="let product of products" class="col-md-3">
+          <div class="product-box">
+            <a routerLink="/products/{{product.id}}" >
+              <img src="assets/{{product.imageUrl}}" class="img-responsive" alt="product image">
+            </a>
+            <a routerLink="/products/{{product.id}}" >
+            <h1>{{product.name}}</h1>
+            </a>
+            <div class="price">{{product.unitPrice|currency:'USD'}}</div>
+            <button (click)="addToCart(product)" class="btn btn-primary btn-sm">Add to card</button>
+          </div>
+        </div>
+        <!-- if there is no products -->
+        <div *ngIf="products?.length==0" class="alert alert-warning col-md-12" role="alert">
+          Products Not Found.
+        </div>
+      </div>
+      <div class="footer-pagination">
+        <div class="row">
+          <div class="col-md-6">
+
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-9 ngb-pagination">
+                <ngb-pagination [collectionSize]="totalElements"
+                                  [(page)]="pageNumber"
+                                  [pageSize]="pageSize"
+                                [maxSize]="5"
+                                [boundaryLinks]="true"
+                (pageChange)="productsList()">
+
+                </ngb-pagination>
+
+              </div>
+              <div class="col-md-3 mt-3" style="text-align: right">
+                <span class="mr-2">Page Size</span>
+                <select #select (change)="selectPageSize(select.value)">
+                  <option selected="selected">5</option>
+                  <option >10</option>
+                  <option>15</option>
+                  <option>20</option>
+                </select>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+

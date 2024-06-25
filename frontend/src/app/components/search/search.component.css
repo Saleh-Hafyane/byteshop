@@ -1,0 +1,28 @@
+/* Search Component Styles */
+.form-header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+
+}
+
+.au-input {
+  width: 300px;
+  padding: 10px;
+  border: 1px solid #FFEDD8;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+.au-btn-submit {
+  background-color: #891652;
+  color: #FFEDD8;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.au-btn-submit:hover {
+  background-color: #ca2179;
+}
