@@ -26,3 +26,20 @@
 .au-btn-submit:hover {
   background-color: #ca2179;
 }
+@media (max-width: 450px) {
+  .form-header{
+    padding: 5px 1px;
+  }
+  .au-input {
+    width: 250px;
+    padding: 10px;
+    border-radius: 4px;
+    margin-right: 6px;
+  }
+
+  .au-btn-submit {
+    padding: 10px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+}

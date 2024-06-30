@@ -2,7 +2,7 @@
 .menu-sidebar-content {
   width: 100%;
   overflow-y: auto;
-  padding: 20px;
+  padding: .1rem;
 
 }
 
@@ -42,13 +42,5 @@
 color: #891652;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .menu-sidebar-content {
-    padding: 10px;
-  }
 
-  .navbar-list a {
-    padding: 8px 12px;
-  }
-}
+

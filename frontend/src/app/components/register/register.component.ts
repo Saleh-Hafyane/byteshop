@@ -2,8 +2,10 @@
 import {Component, inject} from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {LoginHeaderComponent} from "../login-header/login-header.component";
+import {CustomValidators} from "../../validators/customValidators";
+import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-register',
@@ -11,7 +13,8 @@ import {LoginHeaderComponent} from "../login-header/login-header.component";
   standalone: true,
   imports: [
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgIf
   ],
   styleUrls: ['./register.component.css']
 })
@@ -21,12 +24,17 @@ export class RegisterComponent {
   constructor(private authService: AuthService, private router: Router) {}
   private form= inject(FormBuilder);
   registerData = this.form.nonNullable.group({
-    firstname: new FormControl(''),
-    lastname: new FormControl(''),
-    username: new FormControl(''),
-    email: new FormControl(''),
-    password: new FormControl(''),
+    firstname: new FormControl("",[Validators.required,Validators.minLength(2),CustomValidators.notOnlySpaces]),
+    lastname: new FormControl("",[Validators.required,Validators.minLength(2),CustomValidators.notOnlySpaces]),
+    username: new FormControl("",[Validators.required,Validators.minLength(3),CustomValidators.notOnlySpaces]),
+    email: new FormControl("",[Validators.required,Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'),CustomValidators.notOnlySpaces]),
+    password: new FormControl("",[Validators.required,Validators.minLength(5),CustomValidators.notOnlySpaces]),
   }) ;
+  get firstName(){return this.registerData.get('firstname')}
+  get lastName(){return this.registerData.get('lastname')}
+  get email(){return this.registerData.get('email')}
+  get username(){return this.registerData.get('username')}
+  get password(){return this.registerData.get('password')}
   register() {
 
     this.authService.register(this.registerData).subscribe(

@@ -35,3 +35,8 @@
   background-color: #c82333;
   border-color: #bd2130;
 }
+@media (max-width: 930px) {
+  .cart-area{
+    margin: 15px 0;
+  }
+}

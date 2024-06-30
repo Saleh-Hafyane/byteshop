@@ -23,7 +23,7 @@ import {CartItem} from "../../common/cart-item";
 })
 export class ProductListComponent implements OnInit {
   products: Product[] = []
-  categoryId: number = 1
+  categoryId: number = -1 // id -1 means null
   prevCategoryId: number = 1
   hasKeyword: boolean = false
   prevKeyword: string = ""

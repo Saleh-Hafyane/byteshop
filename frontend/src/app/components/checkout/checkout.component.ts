@@ -64,9 +64,7 @@ export class CheckoutComponent implements OnInit{
     this.formService.getCities().subscribe(data=>this.cities=data)
     this.cardDetails()
   }
-  get firstName(){return this.checkoutFormGroup.get('customer.firstName')}
-  get lastName(){return this.checkoutFormGroup.get('customer.lastName')}
-  get email(){return this.checkoutFormGroup.get('customer.email')}
+
   get city(){return this.checkoutFormGroup.get('address.city')}
   get address(){return this.checkoutFormGroup.get('address.address')}
   get cardType(){return this.checkoutFormGroup.get('creditCard.cardType')}
@@ -95,10 +93,7 @@ export class CheckoutComponent implements OnInit{
 
 
 
-    // populate purchase - customer
-    // let customer = this.checkoutFormGroup.controls['customer'].value;
-
-    // populate purchase - address
+    // populate address
     let address = this.checkoutFormGroup.controls['address'].value;
     const city: City = JSON.parse(JSON.stringify(address.city));
     address.city = city.cityName;

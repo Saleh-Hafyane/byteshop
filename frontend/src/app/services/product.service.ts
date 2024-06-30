@@ -17,7 +17,14 @@ export class ProductService {
     return this.getProductsData(searchUrl);
   }
   getProductsPagination(page:number,pageSize:number,categoryId:number):Observable<GetResponseProduct>{
-    const searchUrl = this.baseUrl+"/search/findByCategoryId?id="+categoryId+"&page="+page+"&size="+pageSize
+    let searchUrl:string = ""
+    if(categoryId ===-1){
+      searchUrl = this.baseUrl+"/search/findByNameContaining?name="+""+"&page="+page+"&size="+pageSize
+
+    }else{
+      searchUrl = this.baseUrl+"/search/findByCategoryId?id="+categoryId+"&page="+page+"&size="+pageSize
+
+    }
     return this.httpClient.get<GetResponseProduct>(searchUrl);
   }
 
