@@ -31,5 +31,4 @@ export class ProductCategoryComponent implements OnInit{
       this.productCategories=data});
   }
 
-  protected readonly ProductCategory = ProductCategory;
 }

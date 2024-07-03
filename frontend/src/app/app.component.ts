@@ -7,11 +7,12 @@ import {SearchComponent} from "./components/search/search.component";
 import {CartStatusComponent} from "./components/cart-status/cart-status.component";
 import {ReactiveFormsModule} from "@angular/forms";
 import {LoginHeaderComponent} from "./components/login-header/login-header.component";
+import {ProductCategorySmComponent} from "./components/product-category-sm/product-category-sm.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ProductListComponent, RouterLink, RouterLinkActive, ProductCategoryComponent, SearchComponent, CartStatusComponent, ReactiveFormsModule, LoginHeaderComponent],
+  imports: [RouterOutlet, ProductListComponent, RouterLink, RouterLinkActive, ProductCategoryComponent, SearchComponent, CartStatusComponent, ReactiveFormsModule, LoginHeaderComponent, ProductCategorySmComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
