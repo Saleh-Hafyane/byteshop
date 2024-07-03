@@ -1,0 +1,20 @@
+<nav class="navbar">
+  <div class="navbar-brand">
+    <a routerLink="/">
+      <img src="assets/images/byte.jpg" alt="byteshop" class="img-responsive">
+    </a>
+    <button class="hamburger" (click)="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+  <div class="navbar-menu" [class.is-active]="menuActive">
+    <ul>
+      <li><a routerLink="/">Home</a></li>
+      <li *ngFor="let productCategory of productCategories">
+          <a routerLink="/category/{{productCategory.id}}" routerLinkActive="active-link">{{productCategory.categoryName}}</a>
+      </li>
+    </ul>
+  </div>
+</nav>
