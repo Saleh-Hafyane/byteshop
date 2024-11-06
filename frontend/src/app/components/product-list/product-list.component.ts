@@ -31,18 +31,16 @@ export class ProductListComponent implements OnInit {
   pageNumber: number = 1
   pageSize: number = 5
   totalElements: number = 0
+  sortOrder: string = "";
 
 
-
-
-  constructor(private productService: ProductService, private route: ActivatedRoute,private cartService:CartService) {
+  constructor(private productService: ProductService, private route: ActivatedRoute, private cartService: CartService) {
   }
 
   ngOnInit() {
     this.route.paramMap.subscribe(value => {
       this.productsList()
     })
-
 
 
   }
@@ -62,7 +60,7 @@ export class ProductListComponent implements OnInit {
       this.pageNumber = 1
     }
     this.prevKeyword = keyword
-    this.productService.getProductsSearchPagination(this.pageNumber - 1, this.pageSize, keyword).subscribe(this.getResult());
+    this.productService.getProductsSearchPagination(this.pageNumber - 1, this.pageSize, keyword,this.sortOrder).subscribe(this.getResult());
   }
 
   handleProductList() {
@@ -76,7 +74,7 @@ export class ProductListComponent implements OnInit {
     }
     this.prevCategoryId = this.categoryId
 
-    this.productService.getProductsPagination(this.pageNumber - 1, this.pageSize, this.categoryId)
+    this.productService.getProductsPagination(this.pageNumber - 1, this.pageSize, this.categoryId,this.sortOrder)
       .subscribe(this.getResult())
   }
 
@@ -100,7 +98,7 @@ export class ProductListComponent implements OnInit {
 
           // If availability data exists, update unitsInStock
           if (availabilityItem) {
-            return { ...product, unitsInStock: availabilityItem.units };
+            return {...product, unitsInStock: availabilityItem.units};
           }
           return product;
         });
@@ -121,8 +119,25 @@ export class ProductListComponent implements OnInit {
   }
 
 
+  sortProducts(value: string) {
+    // Map sort option to the format expected by the API
+    switch (value) {
+      case 'price-asc':
+        this.sortOrder = 'unitPrice,asc';
+        break;
+      case 'price-desc':
+        this.sortOrder = 'unitPrice,desc';
+        break;
+      case 'availability-asc':
+        this.sortOrder = 'unitsInStock,asc';
+        break;
+      case 'availability-desc':
+        this.sortOrder = 'unitsInStock,desc';
+        break;
+      default:
+        this.sortOrder = '';
 
-
-
-
+    }
+    this.productsList()
+  }
 }

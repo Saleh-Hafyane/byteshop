@@ -26,16 +26,17 @@ export class ProductService {
    * @param page - The current page number.
    * @param pageSize - Number of products per page.
    * @param categoryId - ID of the category to filter products.
+   * @param sort - The sort order for products.
    * @returns Observable of paginated product data.
    */
-  getProductsPagination(page: number, pageSize: number, categoryId: number): Observable<GetResponseProduct> {
+  getProductsPagination(page: number, pageSize: number, categoryId: number,sort:string): Observable<GetResponseProduct> {
     let searchUrl: string = "";
 
     // Check if all categories are selected (-1); otherwise, filter by category ID
     if (categoryId === -1) {
-      searchUrl = `${this.baseUrl}/search/findByNameContaining?name=&page=${page}&size=${pageSize}`;
+      searchUrl = `${this.baseUrl}/search/findByNameContaining?name=&page=${page}&size=${pageSize}&sort=${sort}`;
     } else {
-      searchUrl = `${this.baseUrl}/search/findByCategoryId?id=${categoryId}&page=${page}&size=${pageSize}`;
+      searchUrl = `${this.baseUrl}/search/findByCategoryId?id=${categoryId}&page=${page}&size=${pageSize}&sort=${sort}`;
     }
 
     return this.httpClientProduct(searchUrl);
@@ -55,10 +56,11 @@ export class ProductService {
    * @param page - The current page number.
    * @param pageSize - Number of products per page.
    * @param keyword - The search term for products.
+   * @param sort - The sort order for products
    * @returns Observable of paginated product data.
    */
-  getProductsSearchPagination(page: number, pageSize: number, keyword: string): Observable<GetResponseProduct> {
-    const searchUrl = `${this.baseUrl}/search/findByNameContaining?name=${keyword}&page=${page}&size=${pageSize}`;
+  getProductsSearchPagination(page: number, pageSize: number, keyword: string,sort:string): Observable<GetResponseProduct> {
+    const searchUrl = `${this.baseUrl}/search/findByNameContaining?name=${keyword}&page=${page}&size=${pageSize}&sort=${sort}`;
     return this.httpClientProduct(searchUrl);
   }
 
