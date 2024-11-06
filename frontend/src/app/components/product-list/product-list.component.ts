@@ -32,6 +32,9 @@ export class ProductListComponent implements OnInit {
   pageSize: number = 5
   totalElements: number = 0
 
+
+
+
   constructor(private productService: ProductService, private route: ActivatedRoute,private cartService:CartService) {
   }
 
@@ -39,6 +42,8 @@ export class ProductListComponent implements OnInit {
     this.route.paramMap.subscribe(value => {
       this.productsList()
     })
+
+
 
   }
 
@@ -89,11 +94,35 @@ export class ProductListComponent implements OnInit {
       this.pageNumber = data.page.number + 1
       this.pageSize = data.page.size
       this.totalElements = data.page.totalElements;
+      this.productService.availability$.subscribe(availabilityList => {
+        this.products = this.products.map(product => {
+          const availabilityItem = availabilityList.find(item => item.id === product.id);
+
+          // If availability data exists, update unitsInStock
+          if (availabilityItem) {
+            return { ...product, unitsInStock: availabilityItem.units };
+          }
+          return product;
+        });
+      });
+
+
     }
   }
 
+
   addToCart(product: Product) {
-    let cartItem  = new CartItem(product)
-    this.cartService.addToCart(cartItem)
+    // Create a new CartItem from the product
+    const cartItem = new CartItem(product);
+
+    if (!this.cartService.addToCart(cartItem)) {
+      alert('Product is out of stock or no more available units!');
+    }
   }
+
+
+
+
+
+
 }

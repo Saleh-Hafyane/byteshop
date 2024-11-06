@@ -1,4 +1,3 @@
-/* Layout CSS */
 .section-content-p35 {
   padding: 0 35px;
 }
@@ -15,7 +14,7 @@
 }
 
 .page-container {
-  margin-left: 25vw;
+  margin-left: 20vw;
   background: #e5e5e5;
   padding: 20px;
   flex-grow: 1;
@@ -28,7 +27,7 @@
 }
 
 .menu-sidebar {
-  width: 25vw;
+  width: 20vw;
   background-color: #240A34;
   position: fixed;
   top: 0;
@@ -52,9 +51,10 @@
 }
 
 .logo img {
-  max-width: 80%;
+  max-width: 60%;
   height: auto;
   transition: transform 0.3s;
+  border-radius: .4rem;
 }
 
 .logo img:hover {
@@ -64,45 +64,8 @@
 .menu-sidebar-content {
   width: 100%;
   overflow-y: auto;
-  padding: 20px;
+  padding: 1.5rem;
 }
-
-.navbar-sidebar {
-  width: 100%;
-}
-
-.navbar-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.navbar-list li {
-  margin: 10px 0;
-}
-
-.navbar-list a {
-  text-decoration: none;
-  color: #FFEDD8;
-  padding: 10px 15px;
-  display: block;
-  border-radius: 4px;
-  transition: background-color 0.3s, color 0.3s;
-  background-color: #891652;
-}
-
-.navbar-list a:hover {
-  background-color: #FFEDD8;
-  color: #891652;
-}
-
-.navbar-list a.active-link {
-  background-color: #FFEDD8;
-  color: #891652;
-}
-
-
-
 
 
 /* Header Styles */
@@ -117,9 +80,9 @@
 }
 
 .container-fluid {
-  max-width: 1200px; /* Limit container width for larger screens */
-  margin: 0 auto; /* Center the container */
-  padding: 0 15px; /* Add padding to container */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -149,7 +112,7 @@
   }
 
   .header-wrap {
-    flex-direction: column; /* Stack items vertically on small screens */
+    flex-direction: column; /* Stack items vertically on smaller screens */
     margin: auto;
   }
   .header-user-wrap{

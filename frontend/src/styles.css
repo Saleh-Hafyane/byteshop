@@ -166,33 +166,7 @@ a:hover {
   padding: 0 10px;
   border: 1px solid #ccc;
 }
-/*!* Footer Styles *!*/
-/*.footer {*/
-/*  background-color: #240a34;*/
-/*  color: #fff;*/
-/*  padding: 20px 0;*/
-/*  text-align: center;*/
-/*}*/
 
-/*.footer ul {*/
-/*  list-style: none;*/
-/*  padding: 0;*/
-/*}*/
-
-/*.footer ul li {*/
-/*  display: inline-block;*/
-/*  margin-right: 10px;*/
-/*}*/
-
-/*.footer ul li a {*/
-/*  color: #fff;*/
-/*  text-decoration: none;*/
-/*  transition: color 0.3s;*/
-/*}*/
-
-/*.footer ul li a:hover {*/
-/*  color: #ffedd8;*/
-/*}*/
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

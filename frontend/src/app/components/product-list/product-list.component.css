@@ -63,6 +63,9 @@
 .product-box .btn:hover {
   background-color: #891652;
 }
+.units{
+  padding: 8px;
+}
 
 /* Footer Pagination Styles */
 .footer-pagination {

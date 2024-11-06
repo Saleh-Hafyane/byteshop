@@ -4,6 +4,7 @@ import {CartItem} from "../../common/cart-item";
 import {CurrencyPipe, NgForOf, NgIf} from "@angular/common";
 import {CheckoutComponent} from "../checkout/checkout.component";
 import {RouterLink} from "@angular/router";
+import {ProductService} from "../../services/product.service";
 
 @Component({
   selector: 'app-cart-detail',
@@ -34,9 +35,11 @@ ngOnInit() {
     this.cartService.calcCartTotals()
 
   }
-
   incQuantity(cartItem: CartItem) {
-    this.cartService.addToCart(cartItem)
+    // Attempt to add to cart and reduce units in stock if successful
+    if (!this.cartService.addToCart(cartItem)) {
+      alert('Product is out of stock or no more available units!');
+    }
   }
 
   decQuantity(cartItem: CartItem) {

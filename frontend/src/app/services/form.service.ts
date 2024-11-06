@@ -11,10 +11,12 @@ import {HttpClient} from "@angular/common/http";
 export class FormService {
 
   constructor(private httpClient:HttpClient) { }
+
   getCities():Observable<City[]>{
     const citiesUrl:string="http://localhost:8080/api/city"
     return this.httpClient.get<citiesInterface>(citiesUrl).pipe(map(data=>data._embedded.city))
   }
+
   getMonthsData(startMonth:number):Observable<number[]>{
     const monthsData:number[] = []
     for (let month = startMonth;month<=12;month++){
