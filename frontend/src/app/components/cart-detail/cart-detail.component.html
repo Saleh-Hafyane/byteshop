@@ -17,7 +17,7 @@
             </td>
             <td>
               <p class="product-name">{{cartItem.name}}</p>
-              <p class="product-price">{{cartItem.unitPrice | currency: "USD"}}</p>
+              <p class="product-price">{{cartItem.unitPrice | currency: 'MAD'}}</p>
             </td>
             <td>
               <div class="items">
@@ -34,7 +34,7 @@
                 <button (click)="delQuantity(cartItem)" class="btn btn-danger btn-sm mt-2">
                   Delete
                 </button>
-                <p class="subtotal mt-3">Subtotal: {{cartItem.quantity * cartItem.unitPrice | currency: 'USD'}}</p>
+                <p class="subtotal mt-3">Subtotal: {{cartItem.quantity * cartItem.unitPrice | currency: 'MAD'}}</p>
               </div>
             </td>
           </tr>
@@ -43,7 +43,7 @@
             <td>
               <p class="total-quantity">Total Quantity: {{totalQuantity}}</p>
               <p class="shipping">Shipping: FREE</p>
-              <p class="total-price">Total Price: {{totalPrice | currency: 'USD'}}</p>
+              <p class="total-price">Total Price: {{totalPrice | currency: 'MAD'}}</p>
               <button routerLink="/checkout" class="btn btn-success btn-sm my-4">
                 Checkout
               </button>

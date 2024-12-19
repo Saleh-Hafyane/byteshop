@@ -13,6 +13,9 @@ export class CheckoutService {
   constructor(private httpClient:HttpClient,private authService: AuthService) {
 
   }
+  /**
+   * Submits a purchase order to the checkout API.
+   */
   makeOrder(purchase:Purchase):Observable<any>{
     const headers = this.authService.getAuthHeaders();
     return this.httpClient.post<Purchase>(this.purchaseUrl,purchase,{headers})

@@ -2,6 +2,7 @@ import { City } from './city';
 
 describe('City', () => {
   it('should create an instance', () => {
-    expect(new City()).toBeTruthy();
+    const city = new City(1,"Rabat")
+    expect(city).toBeTruthy();
   });
 });

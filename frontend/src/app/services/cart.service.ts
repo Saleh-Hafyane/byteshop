@@ -7,7 +7,6 @@ import { ProductService } from "./product.service";
   providedIn: 'root'
 })
 export class CartService {
-  // Array to store cart items
   cartItems: CartItem[] = [];
 
   // Observables to track total quantity and total price in the cart
@@ -19,8 +18,6 @@ export class CartService {
   /**
    * Adds an item to the cart.
    * Checks if there is available stock before adding or updating the item.
-   * @param item - The item to add to the cart
-   * @returns true if the item is added successfully, false if out of stock
    */
   addToCart(item: CartItem): boolean {
     let availableStock = this.productService.getProductStock(item.id);
@@ -29,24 +26,24 @@ export class CartService {
     if (availableStock && availableStock > 0) {
       // Find if the item is already in the cart
       const cartItem = this.cartItems.find(cartItem => cartItem.id === item.id);
-
       // Increase quantity if item is already in cart, otherwise add new item
       if (cartItem) {
         cartItem.quantity++;
       } else {
         this.cartItems.push(item);
       }
-
       // Decrease stock in ProductService and synchronize
       this.productService.updateProductStock(item.id, availableStock - 1);
       this.calcCartTotals();
       return true;
     } else {
-      // If item is out of stock, add it with the initial stock reduced by 1
+      // If fixes: when first adding the item to the cart, "availableStock" is undefined
       if (!availableStock && availableStock !== 0) {
+
         this.productService.updateProductStock(item.id, item.unitsInStock - 1);
         this.cartItems.push(item);
       }
+
       this.calcCartTotals();
       availableStock = this.productService.getProductStock(item.id);
 
@@ -76,7 +73,6 @@ export class CartService {
   /**
    * Decreases the quantity of a specific item in the cart.
    * If quantity reaches zero, removes the item from the cart.
-   * @param cartItem - The item to decrease in quantity
    */
   decQuantity(cartItem: CartItem) {
     // Reduce quantity in the cart
@@ -92,12 +88,12 @@ export class CartService {
     } else {
       this.calcCartTotals();
     }
+
   }
 
   /**
    * Removes a specific item from the cart.
    * Restores the product's stock in `ProductService`.
-   * @param cartItem - The item to remove
    */
   remCartItem(cartItem: CartItem) {
     // Find the index of the item in the cart

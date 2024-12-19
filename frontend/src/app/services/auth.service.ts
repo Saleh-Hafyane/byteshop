@@ -15,18 +15,17 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) {
 
   }
-
+  // Registers a new user.
   register(registerRequest: any): Observable<any> {
     const registerData = registerRequest.getRawValue();
-    console.log(registerData)
     return this.http.post<User>(`${this.apiUrl}/register`, registerData);
   }
-
+  // Authenticates a user (login).
   login(authRequest: any): Observable<any> {
     const authData = authRequest.getRawValue();
     return this.http.post<User>(`${this.apiUrl}/authenticate`, authData);
   }
-
+  // Logs out the user by clearing the stored token and username.
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('username');
@@ -34,24 +33,28 @@ export class AuthService {
     this.router.navigate(['/login']);
 
   }
-
+  // Checks if the user is authenticated.
   isAuthenticated(): boolean {
     const token = localStorage.getItem('token');
     return !!token;
   }
-
+  // Saves the token to local storage.
   saveToken(token: string): void {
     localStorage.setItem('token', token);
   }
+  // Saves the username to local storage.
   saveUsername(username: string){
     localStorage.setItem('username', username);
   }
+  // Retrieves the username from local storage.
   getUsername(){
     return localStorage.getItem('username');
   }
+  // Retrieves the token from local storage.
   getToken(){
     return localStorage.getItem('token');
   }
+  // Constructs the HTTP headers with the authorization token.
   getAuthHeaders(): HttpHeaders {
     const token = this.getToken();
     return new HttpHeaders({

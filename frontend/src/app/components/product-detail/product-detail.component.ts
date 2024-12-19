@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Product} from "../../common/product";
 import {ProductService} from "../../services/product.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
-import {CurrencyPipe} from "@angular/common";
+import {CurrencyPipe, NgOptimizedImage} from "@angular/common";
 import {CartItem} from "../../common/cart-item";
 import {CartService} from "../../services/cart.service";
 
@@ -11,7 +11,8 @@ import {CartService} from "../../services/cart.service";
   standalone: true,
   imports: [
     CurrencyPipe,
-    RouterLink
+    RouterLink,
+    NgOptimizedImage
   ],
   templateUrl: './product-detail.component.html',
   styleUrl: './product-detail.component.css'

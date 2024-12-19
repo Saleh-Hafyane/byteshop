@@ -21,14 +21,7 @@ export class ProductService {
     this.availabilitySource.next([]);
   }
 
-  /**
-   * Retrieves paginated products based on page number, page size, and category ID.
-   * @param page - The current page number.
-   * @param pageSize - Number of products per page.
-   * @param categoryId - ID of the category to filter products.
-   * @param sort - The sort order for products.
-   * @returns Observable of paginated product data.
-   */
+  // Retrieves paginated products based on page number, sort order, page size, and category ID.
   getProductsPagination(page: number, pageSize: number, categoryId: number,sort:string): Observable<GetResponseProduct> {
     let searchUrl: string = "";
 
@@ -42,52 +35,30 @@ export class ProductService {
     return this.httpClientProduct(searchUrl);
   }
 
-  /**
-   * Retrieves the list of product categories.
-   * @returns Observable of product categories.
-   */
+  // Retrieves the list of product categories.
   getProductCategories(): Observable<ProductCategory[]> {
     return this.httpClient.get<GetResponseProductCategory>(this.categoryUrl)
       .pipe(map(response => response._embedded.productCategory));
   }
 
-  /**
-   * Retrieves paginated products based on a search keyword.
-   * @param page - The current page number.
-   * @param pageSize - Number of products per page.
-   * @param keyword - The search term for products.
-   * @param sort - The sort order for products
-   * @returns Observable of paginated product data.
-   */
+  // Retrieves paginated products based on a search keyword.
   getProductsSearchPagination(page: number, pageSize: number, keyword: string,sort:string): Observable<GetResponseProduct> {
     const searchUrl = `${this.baseUrl}/search/findByNameContaining?name=${keyword}&page=${page}&size=${pageSize}&sort=${sort}`;
     return this.httpClientProduct(searchUrl);
   }
 
-  /**
-   * Retrieves a specific product by ID.
-   * @param productId - The ID of the product to retrieve.
-   * @returns Observable of the specified product.
-   */
+  // Retrieves a specific product by ID.
   getProduct(productId: number): Observable<Product> {
     const productUrl = `${this.baseUrl}/${productId}`;
     return this.httpClient.get<Product>(productUrl);
   }
 
-  /**
-   * Helper function to perform HTTP GET requests for product data.
-   * @param url - The endpoint URL.
-   * @returns Observable of paginated product data.
-   */
+  // Helper function to perform HTTP GET requests for product data.
   httpClientProduct(url: string): Observable<GetResponseProduct> {
     return this.httpClient.get<GetResponseProduct>(url);
   }
 
-  /**
-   * Updates the stock availability of a product and syncs it across the app.
-   * @param productId - The ID of the product to update.
-   * @param unitsInStock - The new stock quantity.
-   */
+  // Updates the stock availability of a product and syncs it across the app.
   updateProductStock(productId: string, unitsInStock: number) {
     // Get the current list of available products
     const currentAvailability = this.availabilitySource.getValue();
@@ -104,11 +75,7 @@ export class ProductService {
     }
   }
 
-  /**
-   * Retrieves the available stock for a specific product.
-   * @param productId - The ID of the product to check.
-   * @returns The units in stock or undefined if the product is not found.
-   */
+  // Retrieves the available stock for a specific product.
   getProductStock(productId: string): number | undefined {
     const product = this.availabilitySource.getValue().find(item => item.id === productId);
     return product?.units;

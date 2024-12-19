@@ -4,8 +4,12 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/c
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class JwtInterceptor implements HttpInterceptor {
+export class JwtInterceptorService implements HttpInterceptor {
 
+  /**
+   * This method intercepts any HTTP request sent out by Angular's HttpClient.
+   * If the user has a token, it will be added to the request headers.
+   */
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = localStorage.getItem('token');
     if (token) {

@@ -17,32 +17,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "id")
-//    private Long id;
-//    @Column(name = "order_tracking_number")
-//    private String orderTrackingNumber;
-//    @Column(name = "total_quantity")
-//    private int totalQuantity;
-//    @Column(name = "total_price")
-//    private BigDecimal totalPrice;
-//    @Column(name = "status")
-//    private String status;
-//    @Column(name = "date_created")
-//    @CreationTimestamp
-//    private Date dateCreated;
-//    @Column(name = "last_updated")
-//    @UpdateTimestamp
-//    private Date lastUpdated;
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
-//    private Set<OrderItem> orderItems = new HashSet<>();
-//    @ManyToOne
-//    @JoinColumn(name = "user_id",referencedColumnName = "id")
-//    private User user;
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "address_id",referencedColumnName = "id")
-//    private Address address;
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
 private Long id;

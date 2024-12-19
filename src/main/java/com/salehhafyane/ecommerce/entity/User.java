@@ -14,7 +14,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+/**
+ * Entity representing a User in the application.
+ * Implements {@link UserDetails} for integration with Spring Security.
+ */
 @Entity
 @Table(name = "db_user")
 @Data
@@ -40,8 +43,8 @@ public class User implements UserDetails {
             if (orders==null){
                 orders = new HashSet<>();
             }
-            orders.add(order);
-            order.setUser(this);
+            orders.add(order); // Adds the order to the user's set of orders.
+            order.setUser(this); // Sets this user as the owner of the order.
         }
     }
 

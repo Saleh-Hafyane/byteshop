@@ -2,6 +2,7 @@ import { Address } from './address';
 
 describe('Address', () => {
   it('should create an instance', () => {
-    expect(new Address()).toBeTruthy();
+    const address = new Address("Rabat","Avenue")
+    expect(address).toBeTruthy();
   });
 });

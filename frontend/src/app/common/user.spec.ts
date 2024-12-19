@@ -2,6 +2,10 @@ import { User } from './user';
 
 describe('User', () => {
   it('should create an instance', () => {
-    expect(new User()).toBeTruthy();
+    const mockUser: User = {
+      token:'test-token',
+      username:'test-username'
+    };
+    expect(mockUser).toBeTruthy();
   });
 });
