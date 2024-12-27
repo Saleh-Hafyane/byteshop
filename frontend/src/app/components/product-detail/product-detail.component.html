@@ -1,15 +1,17 @@
-<div class="detail-section">
-  <div class="container-fluid">
-    <div class="product-detail">
-      <img ngSrc="assets/{{product.imageUrl}}" alt="product image" class="detail-img" fill>
+<div class="detail-section py-5">
+  <div class="container">
+    <div class="product-detail row align-items-center">
+      <img src="assets/{{product.imageUrl}}" alt="product image" class="detail-img" fill>
       <div class="product-info">
-        <h2 class="product-name">{{product.name}}</h2>
-        <div class="price">{{product.unitPrice | currency: 'MAD'}}</div>
+        <h2 class="product-name fw-bold mb-3">{{product.name}}</h2>
+        <div class="price text-primary fs-4 mb-4">{{product.unitPrice | currency: 'MAD '}}</div>
         <a (click)="addToCart()" class="primary-btn">Add To Cart</a>
         <hr>
-        <h3>Description</h3>
-        <p class="product-description">{{product.description}}</p>
-        <a routerLink="/products" class="back-link">Back To Products</a>
+        <h3 class="fs-5 text-secondary mt-4">Description</h3>
+        <p class="product-description text-muted">{{product.description}}</p>
+        <a routerLink="/products" class="btn btn-link text-decoration-none mt-3">
+          <i class="fas fa-arrow-left me-2"></i>Back To Products
+        </a>
       </div>
     </div>
   </div>

@@ -1,9 +1,9 @@
-<div class="form-header">
-  <input #input class="au-input au-input-xl" type="text"
+<div class="form-header d-flex me-3">
+  <input #input class="au-input au-input-xl form-control rounded-pill border-0" type="text"
          placeholder="Search for product"
           (keyup.enter)="search(input.value)"
   />
-  <button class="au-btn-submit" (click)="search(input.value)">
+  <button class="au-btn-submit btn btn-primary ms-2 rounded-pill px-4" (click)="search(input.value)">
     Search
   </button>
 </div>

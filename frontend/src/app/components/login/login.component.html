@@ -24,6 +24,10 @@
         required
       />
     </div>
+    <div *ngIf="loginFailed" class="alert alert-danger mt-1">
+      Invalid Username or Password
+
+    </div>
 
     <button type="submit" class="btn w-100">Login</button>
     <div class="text-center mt-3">

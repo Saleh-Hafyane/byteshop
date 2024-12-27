@@ -1,11 +1,11 @@
-<div class="main-content">
+<div class="main-content py-4">
   <div class="section-content section-content-p30">
     <div class="container-fluid">
       <!-- Sorting Dropdown -->
-      <div class="row mb-4">
+      <div class="row mb-4 align-items-center">
         <div class="col-md-6">
-          <label for="sort" class="fs-5">Sort By:</label>
-          <select id="sort" (change)="sortProducts($any($event.target).value)" class="m-4">
+          <label for="sort" class="fs-5 fw-bold text-secondary">Sort By:</label>
+          <select id="sort" (change)="sortProducts($any($event.target).value)" class="form-select w-auto d-inline-block ms-3">
             <option value=""></option>
             <option value="price-asc">Price: Low to High</option>
             <option value="price-desc">Price: High to Low</option>
@@ -14,18 +14,19 @@
           </select>
         </div>
       </div>
+      <!-- Product Grid -->
       <div class="row">
-        <div *ngFor="let product of products" class="col-lg-4 col-md-6 col-xl-3">
-          <div class="product-box">
+        <div *ngFor="let product of products" class="col-lg-4 col-md-6 col-xl-3 mb-4">
+          <div class="product-box card shadow-sm border-0 h-100 text-center">
             <a routerLink="/products/{{product.id}}" >
-              <img src="assets/{{product.imageUrl}}" class="img-responsive" alt="product image">
+              <img src="assets/{{product.imageUrl}}" class="img-responsive card-img-top img-fluid" alt="product image">
             </a>
-            <a routerLink="/products/{{product.id}}" >
-            <h1>{{product.name}}</h1>
+            <a routerLink="/products/{{product.id}}" class="text-decoration-none text-dark">
+            <h3 class="mb-2 fw-bold fs">{{product.name}}</h3>
             </a>
-            <div class="price">{{product.unitPrice|currency:'MAD'}}</div>
+            <div class="price text-primary fw-bold mb-3">{{product.unitPrice|currency:'MAD '}}</div>
             <div class="units">{{product.unitsInStock}} units in stock</div>
-            <button (click)="addToCart(product)" class="btn btn-primary btn-sm">Add to card</button>
+            <button (click)="addToCart(product)" class="btn btn-primary btn-sm w-100">Add to card</button>
           </div>
         </div>
         <!-- if there is no products -->
@@ -33,13 +34,13 @@
           Products Not Found.
         </div>
       </div>
-      <div class="footer-pagination">
+      <div class="footer-pagination mt-4">
         <div class="row">
           <div class="col-md-6">
 
           </div>
           <div class="col-md-6">
-            <div class="row">
+            <div class="row align-items-center">
               <div class="col-md-9 ngb-pagination">
                 <ngb-pagination [collectionSize]="totalElements"
                                   [(page)]="pageNumber"
@@ -51,9 +52,9 @@
                 </ngb-pagination>
 
               </div>
-              <div class="col-md-3 mt-3" style="text-align: right">
+              <div class="col-md-3 text-end" style="text-align: right">
                 <span class="mr-2">Page Size</span>
-                <select #select (change)="selectPageSize(select.value)">
+                <select #select (change)="selectPageSize(select.value)" class="form-select form-select-sm d-inline w-auto">
                   <option selected="selected">5</option>
                   <option >10</option>
                   <option>15</option>

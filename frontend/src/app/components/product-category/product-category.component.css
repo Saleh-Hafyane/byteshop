@@ -16,6 +16,7 @@
 
 .navbar-list a {
   text-decoration: none;
+  font-weight: bold;
   color: #FFEDD8;
   padding: 10px 15px;
   display: block;

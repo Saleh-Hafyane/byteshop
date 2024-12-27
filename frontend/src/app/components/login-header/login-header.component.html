@@ -1,22 +1,22 @@
 <div class="cart-area container">
   <div *ngIf="authService.userSig() === null" class="d-flex justify-content-end">
     <div class="mx-2">
-      <a routerLink="/login" class="btn btn-primary">
+      <a routerLink="/login" class="btn btn-outline-light rounded-pill">
         Login
       </a>
     </div>
     <div class="mx-2">
-      <a routerLink="/register" class="btn btn-secondary">
+      <a routerLink="/register" class="btn btn-primary rounded-pill">
         Register
       </a>
     </div>
   </div>
   <div *ngIf="authService.userSig() || authService.userSig() === undefined" class="d-flex justify-content-end align-items-center user-info">
-    <div class="mx-2">
-      <h4 class="mb-0">Welcome {{ getUser() }}</h4>
+    <div class="mx-2 ">
+      <h4 class="mb-0 fst-italic">Welcome {{ getUser() }}</h4>
     </div>
     <div class="mx-2">
-      <a (click)="logout()" class="btn btn-danger">
+      <a (click)="logout()" class="btn btn-danger fw-bold rounded-pill py-2 px-3 fst-italic">
         Logout
       </a>
     </div>

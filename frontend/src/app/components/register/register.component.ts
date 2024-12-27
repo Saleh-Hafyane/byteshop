@@ -23,6 +23,7 @@ export class RegisterComponent {
 
   constructor(private authService: AuthService, private router: Router) {}
   private form= inject(FormBuilder);
+  protected registerFailed: boolean = false;
   registerData = this.form.nonNullable.group({
     firstname: new FormControl("",[Validators.required,Validators.minLength(2),CustomValidators.notOnlySpaces]),
     lastname: new FormControl("",[Validators.required,Validators.minLength(2),CustomValidators.notOnlySpaces]),
@@ -36,6 +37,10 @@ export class RegisterComponent {
   get username(){return this.registerData.get('username')}
   get password(){return this.registerData.get('password')}
   register() {
+    if (this.registerData.invalid) {
+      this.registerFailed = true;
+      return;
+    }
 
     this.authService.register(this.registerData).subscribe(
       response => {
@@ -44,7 +49,7 @@ export class RegisterComponent {
         this.router.navigateByUrl('/');
       },
       error => {
-        console.error('Registration failed', error);
+        this.registerFailed = true;
       }
     );
   }
