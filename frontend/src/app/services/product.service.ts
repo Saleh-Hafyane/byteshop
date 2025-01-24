@@ -1,19 +1,23 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
-import { BehaviorSubject, map, Observable } from "rxjs";
-import { Product } from "../common/product";
-import { ProductCategory } from "../common/product-category";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject, map, Observable } from 'rxjs';
+import { Product } from '../common/product';
+import { ProductCategory } from '../common/product-category';
+import { ProductManagement } from '../common/product-management';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductService {
   // API endpoints for products and product categories
-  private baseUrl = "http://localhost:8080/api/products";
-  private categoryUrl = "http://localhost:8080/api/product-category";
+  private baseUrl = 'http://localhost:8080/api/products';
+  private categoryUrl = 'http://localhost:8080/api/product-category';
+  private baseAdminUrl = 'http://localhost:8080/api/admin/products';
 
   // BehaviorSubject to hold and broadcast product stock availability
-  private availabilitySource = new BehaviorSubject<{ id: string, units: number }[]>([]);
+  private availabilitySource = new BehaviorSubject<
+    { id: string; units: number }[]
+  >([]);
   availability$ = this.availabilitySource.asObservable();
 
   constructor(private httpClient: HttpClient) {
@@ -22,8 +26,13 @@ export class ProductService {
   }
 
   // Retrieves paginated products based on page number, sort order, page size, and category ID.
-  getProductsPagination(page: number, pageSize: number, categoryId: number,sort:string): Observable<GetResponseProduct> {
-    let searchUrl: string = "";
+  getProductsPagination(
+    page: number,
+    pageSize: number,
+    categoryId: number,
+    sort: string
+  ): Observable<GetResponseProduct> {
+    let searchUrl: string = '';
 
     // Check if all categories are selected (-1); otherwise, filter by category ID
     if (categoryId === -1) {
@@ -37,12 +46,18 @@ export class ProductService {
 
   // Retrieves the list of product categories.
   getProductCategories(): Observable<ProductCategory[]> {
-    return this.httpClient.get<GetResponseProductCategory>(this.categoryUrl)
-      .pipe(map(response => response._embedded.productCategory));
+    return this.httpClient
+      .get<GetResponseProductCategory>(this.categoryUrl)
+      .pipe(map((response) => response._embedded.productCategory));
   }
 
   // Retrieves paginated products based on a search keyword.
-  getProductsSearchPagination(page: number, pageSize: number, keyword: string,sort:string): Observable<GetResponseProduct> {
+  getProductsSearchPagination(
+    page: number,
+    pageSize: number,
+    keyword: string,
+    sort: string
+  ): Observable<GetResponseProduct> {
     const searchUrl = `${this.baseUrl}/search/findByNameContaining?name=${keyword}&page=${page}&size=${pageSize}&sort=${sort}`;
     return this.httpClientProduct(searchUrl);
   }
@@ -64,21 +79,50 @@ export class ProductService {
     const currentAvailability = this.availabilitySource.getValue();
 
     // Find the product in the availability list by ID
-    const product = currentAvailability.find(item => item.id === productId);
+    const product = currentAvailability.find((item) => item.id === productId);
 
     // Update the stock if product exists; otherwise, add it to the list
     if (product) {
       product.units = unitsInStock;
       this.availabilitySource.next([...currentAvailability]);
     } else {
-      this.availabilitySource.next([...currentAvailability, { id: productId, units: unitsInStock }]);
+      this.availabilitySource.next([
+        ...currentAvailability,
+        { id: productId, units: unitsInStock },
+      ]);
     }
   }
 
   // Retrieves the available stock for a specific product.
   getProductStock(productId: string): number | undefined {
-    const product = this.availabilitySource.getValue().find(item => item.id === productId);
+    const product = this.availabilitySource
+      .getValue()
+      .find((item) => item.id === productId);
     return product?.units;
+  }
+  // add product by the admin
+  addProduct(product: any): Observable<any> {
+    const token = localStorage.getItem('token'); // Retrieve the JWT token
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    console.log(JSON.stringify(product));
+    return this.httpClient.post<any>(this.baseAdminUrl + '/add', product, {
+      headers,
+    });
+  }
+  // update product by the admin
+  updateProduct(id: number, product: Product): Observable<Product> {
+    return this.httpClient.put<Product>(`${this.baseAdminUrl}/${product.id}`, {
+      id,
+      product,
+    });
+  }
+  // delete product by the admin
+  deleteProduct(id: number): Observable<any> {
+    const token = localStorage.getItem('token'); // Retrieve the JWT token
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.httpClient.delete<any>(`${this.baseAdminUrl}/${id}`, {
+      headers,
+    });
   }
 }
 

@@ -19,8 +19,6 @@ public class  Product {
     @ManyToOne
     @JoinColumn(name = "category_id",nullable = false)
     private ProductCategory category;
-    @Column(name = "sku")
-    private String sku;
     @Column(name = "name")
     private String name;
     @Column(name = "description")
@@ -29,8 +27,6 @@ public class  Product {
     private BigDecimal unitPrice;
     @Column(name = "image_url")
     private String imageUrl;
-    @Column(name = "active")
-    private Boolean active;
     @Column(name = "units_in_stock")
     private int unitsInStock;
     @Column(name = "date_created")

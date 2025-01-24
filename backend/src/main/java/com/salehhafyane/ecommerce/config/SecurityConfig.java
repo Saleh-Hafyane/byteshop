@@ -1,5 +1,6 @@
 package com.salehhafyane.ecommerce.config;
 
+import com.salehhafyane.ecommerce.entity.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,8 +36,8 @@ public class SecurityConfig {
 
                 // Configure request authorization rules.
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/api/checkout/**") // Protect the `/api/checkout/**` endpoints.
-                            .authenticated()                     // Require authentication for these endpoints.
+                    auth.requestMatchers("/api/checkout/**").hasRole("USER") // Protect the `/api/checkout/**` endpoints.
+                            .requestMatchers("/api/admin/**").hasRole("ADMIN") // Protect the `/api/admin/**` endpoints.
                             .anyRequest()                       // All other endpoints.
                             .permitAll();                       // Allow access without authentication.
                 })

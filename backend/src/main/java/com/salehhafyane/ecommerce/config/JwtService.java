@@ -65,6 +65,7 @@ public class JwtService {
 
     // Generates a new JWT token with additional claims and the user details.
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+
         return Jwts.builder()
                 .setClaims(extraClaims)  // Set any additional claims
                 .setSubject(userDetails.getUsername())  // Set the subject as the username

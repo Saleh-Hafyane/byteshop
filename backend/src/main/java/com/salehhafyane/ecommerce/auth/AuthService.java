@@ -12,6 +12,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 // This service class handles authentication-related operations, such as user registration and login.
 @Service
 @AllArgsConstructor
@@ -46,9 +49,11 @@ public class AuthService {
 
         // Save the new user to the database.
         userRepository.save(user);
-
+        // Add the role to the extra claims
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("role", user.getRole());
         // Generate a JWT token for the newly registered user.
-        var jwtToken = jwtService.generateToken(user);
+        var jwtToken = jwtService.generateToken(extraClaims,user);
 
         // Return the authentication response with the JWT token and username.
         return AuthenticationResponse.builder()
@@ -69,14 +74,17 @@ public class AuthService {
 
         // Retrieve the user details from the database. Throws an exception if the user is not found.
         var user = userRepository.findByUsername(request.getUsername()).orElseThrow();
-
+        // add the role to the extra claims
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("role", user.getRole());
         // Generate a JWT token for the authenticated user.
-        var jwtToken = jwtService.generateToken(user);
+        var jwtToken = jwtService.generateToken(extraClaims,user);
 
         // Return the authentication response with the JWT token and username.
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .username(request.getUsername())
+                .role(user.getRole())
                 .build();
     }
 }

@@ -1,8 +1,15 @@
-<div class="cart-area">
+<div *ngIf="getRole() == 'USER' || getRole() == undefined" class="cart-area">
   <a routerLink="/cart-detail">
-    <div class="total"> {{ totalPrice }}
-      <span> {{totalQuantity}}</span>
+    <div class="total">
+      {{ totalPrice }}
+      <span> {{ totalQuantity }}</span>
     </div>
     <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+  </a>
+</div>
+<!-- Admin -->
+<div *ngIf="getRole() == 'ADMIN'" class="cart-area">
+  <a routerLink="/admin/products/add">
+    <i class="fa fa-plus" aria-hidden="true">ADD</i>
   </a>
 </div>

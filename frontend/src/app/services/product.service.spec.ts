@@ -10,12 +10,10 @@ describe('ProductService', () => {
 
   const mockProduct: Product = {
     id: "1",
-    sku: 'T-P',
     name: 'Test Product',
     description: 'Sample product description',
     unitPrice: 1000,
     imageUrl: 'https://example.com/sample.jpg',
-    active: true,
     unitsInStock: 10,
     dateCreated: new Date(),
     lastUpdated: new Date()

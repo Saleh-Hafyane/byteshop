@@ -6,6 +6,7 @@ import {CheckoutComponent} from "./components/checkout/checkout.component";
 import {authGuard} from "./auth.guard";
 import {LoginComponent} from "./components/login/login.component";
 import {RegisterComponent} from "./components/register/register.component";
+import { AddProductComponent } from './components/add-product/add-product.component';
 
 
 export const routes: Routes = [
@@ -18,6 +19,7 @@ export const routes: Routes = [
   {path:'category/:id',component:ProductListComponent},
   {path:'category',component:ProductListComponent},
   {path:'products',component:ProductListComponent},
+  {path:'admin/products/add',component:AddProductComponent},
   {path:'',redirectTo:'/products',pathMatch:'full'},
   {path:'**',redirectTo:'/products',pathMatch:'full'}
 ];

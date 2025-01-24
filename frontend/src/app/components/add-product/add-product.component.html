@@ -1,0 +1,167 @@
+<div class="main-content page-m mt-4">
+  <div class="section-content section-content-p30">
+    <div class="container-fluid">
+      <form [formGroup]="addProductFormGroup" (ngSubmit)="onSubmit()">
+        <!-- Category -->
+        <div class="form-area">
+          <h3>Add Product</h3>
+
+          <div class="row">
+            <div class="col-md-2"><span>Category</span></div>
+            <div class="col-md-9">
+              <div class="input-space">
+                <select formControlName="category">
+                  <option></option>
+                  <option *ngFor="let category of categories">
+                    {{ category.categoryName }}
+                  </option>
+                </select>
+                <div
+                  *ngIf="
+                    category?.invalid && (category?.dirty || category?.touched)
+                  "
+                  class="alert alert-danger mt-1"
+                >
+                  <div *ngIf="category?.hasError('required')">
+                    Category is Required.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Product Name-->
+          <div class="row">
+            <div class="col-md-2"><span>Product Name</span></div>
+            <div class="col-md-9">
+              <div class="input-space">
+                <input formControlName="name" type="text" />
+                <div
+                  *ngIf="name?.invalid && (name?.dirty || name?.touched)"
+                  class="alert alert-danger mt-1"
+                >
+                  <div
+                    *ngIf="
+                      name?.hasError('required') ||
+                      name?.hasError('notOnlySpaces')
+                    "
+                  >
+                    the name is Required.
+                  </div>
+                  <div *ngIf="name?.hasError('minlength')">
+                    the name is too short.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Description-->
+          <div class="row">
+            <div class="col-md-2"><span>Description</span></div>
+            <div class="col-md-9">
+              <div class="input-space">
+                <input formControlName="description" type="text" />
+                <div
+                  *ngIf="
+                    description?.invalid &&
+                    (description?.dirty || description?.touched)
+                  "
+                  class="alert alert-danger mt-1"
+                >
+                  <div
+                    *ngIf="
+                      description?.hasError('required') ||
+                      description?.hasError('notOnlySpaces')
+                    "
+                  >
+                    description is Required.
+                  </div>
+                  <div *ngIf="description?.hasError('minlength')">
+                    description is too short.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Image Url-->
+          <div class="row">
+            <div class="col-md-2"><span>Image Url</span></div>
+            <div class="col-md-9">
+              <div class="input-space">
+                <input formControlName="imageUrl" type="text" />
+                <div
+                  *ngIf="
+                    imageUrl?.invalid && (imageUrl?.dirty || imageUrl?.touched)
+                  "
+                  class="alert alert-danger mt-1"
+                >
+                  <div
+                    *ngIf="
+                      imageUrl?.hasError('required') ||
+                      imageUrl?.hasError('notOnlySpaces')
+                    "
+                  >
+                    image url is Required.
+                  </div>
+                  <div *ngIf="imageUrl?.hasError('minlength')">
+                    image url is too short.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Unit Price-->
+          <div class="row">
+            <div class="col-md-2"><span>Unit Price</span></div>
+            <div class="col-md-9">
+              <div class="input-space">
+                <input formControlName="unitPrice" type="text" />
+                <div
+                  *ngIf="
+                    unitPrice?.invalid &&
+                    (unitPrice?.dirty || unitPrice?.touched)
+                  "
+                  class="alert alert-danger mt-1"
+                >
+                  <div *ngIf="unitPrice?.hasError('required')">
+                    unit price is Required.
+                  </div>
+                  <div *ngIf="unitPrice?.hasError('pattern')">
+                    unit price consists of digits.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Unit in Stock-->
+          <div class="row">
+            <div class="col-md-2"><span>Units in Stock</span></div>
+            <div class="col-md-9">
+              <div class="input-space">
+                <input formControlName="unitInStock" type="text" />
+                <div
+                  *ngIf="
+                    unitInStock?.invalid &&
+                    (unitInStock?.dirty || unitInStock?.touched)
+                  "
+                  class="alert alert-danger mt-1"
+                >
+                  <div *ngIf="unitInStock?.hasError('required')">
+                    units in stock is Required.
+                  </div>
+                  <div *ngIf="unitInStock?.hasError('pattern')">
+                    units in stock consists of digits.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADD Button -->
+        <div class="text-center">
+          <button type="submit" class="btn btn-info">Add Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

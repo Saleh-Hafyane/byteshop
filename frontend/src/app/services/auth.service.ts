@@ -1,20 +1,18 @@
 // auth.service.ts
-import {Injectable, signal} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import { Injectable, signal } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router';
-import {User} from "../common/user";
-
+import { User } from '../common/user';
+import { jwtDecode } from 'jwt-decode';
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  userSig = signal<User|undefined|null>(undefined)
+  userSig = signal<User | undefined | null>(undefined);
   private apiUrl = 'http://localhost:8080/api/v1/auth';
+  constructor(private http: HttpClient, private router: Router) {}
 
-  constructor(private http: HttpClient, private router: Router) {
-
-  }
   // Registers a new user.
   register(registerRequest: any): Observable<any> {
     const registerData = registerRequest.getRawValue();
@@ -31,7 +29,6 @@ export class AuthService {
     localStorage.removeItem('username');
     this.userSig.set(null);
     this.router.navigate(['/login']);
-
   }
   // Checks if the user is authenticated.
   isAuthenticated(): boolean {
@@ -43,15 +40,16 @@ export class AuthService {
     localStorage.setItem('token', token);
   }
   // Saves the username to local storage.
-  saveUsername(username: string){
+  saveUsername(username: string) {
     localStorage.setItem('username', username);
   }
+
   // Retrieves the username from local storage.
-  getUsername(){
+  getUsername() {
     return localStorage.getItem('username');
   }
   // Retrieves the token from local storage.
-  getToken(){
+  getToken() {
     return localStorage.getItem('token');
   }
   // Constructs the HTTP headers with the authorization token.
@@ -59,7 +57,24 @@ export class AuthService {
     const token = this.getToken();
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     });
+  }
+  getDecodedToken(token: string): any {
+    try {
+      return jwtDecode(token);
+    } catch (error) {
+      console.error('Error decoding JWT:', error);
+      return null;
+    }
+  }
+
+  getRole(): string | null {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedToken = this.getDecodedToken(token);
+      return decodedToken ? decodedToken.role : null;
+    }
+    return null;
   }
 }
