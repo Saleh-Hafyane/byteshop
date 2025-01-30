@@ -53,7 +53,7 @@
             <!-- Admin -->
             <div *ngIf="getRole() == 'ADMIN'">
               <button
-                (click)="addToCart(product)"
+                routerLink="/admin/products/update/{{ product.id }}"
                 class="btn btn-primary btn-sm w-100"
               >
                 Edit

@@ -3,8 +3,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { Product } from '../common/product';
 import { ProductCategory } from '../common/product-category';
-import { ProductManagement } from '../common/product-management';
-
 @Injectable({
   providedIn: 'root',
 })
@@ -67,6 +65,10 @@ export class ProductService {
     const productUrl = `${this.baseUrl}/${productId}`;
     return this.httpClient.get<Product>(productUrl);
   }
+  // retrieve category by category url
+  getProductCategory(categoryUrl: string): Observable<ProductCategory> {
+    return  this.httpClient.get<ProductCategory>(categoryUrl)
+  }
 
   // Helper function to perform HTTP GET requests for product data.
   httpClientProduct(url: string): Observable<GetResponseProduct> {
@@ -104,17 +106,18 @@ export class ProductService {
   addProduct(product: any): Observable<any> {
     const token = localStorage.getItem('token'); // Retrieve the JWT token
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    console.log(JSON.stringify(product));
     return this.httpClient.post<any>(this.baseAdminUrl + '/add', product, {
       headers,
     });
   }
   // update product by the admin
-  updateProduct(id: number, product: Product): Observable<Product> {
-    return this.httpClient.put<Product>(`${this.baseAdminUrl}/${product.id}`, {
-      id,
-      product,
-    });
+  updateProduct(id: number, product: any): Observable<any> {
+    const token = localStorage.getItem('token'); // Retrieve the JWT token
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.httpClient.put<any>(`${this.baseAdminUrl}/${id}`, product,
+      {
+        headers
+      });
   }
   // delete product by the admin
   deleteProduct(id: number): Observable<any> {

@@ -34,7 +34,7 @@
             <div class="col-md-2"><span>Product Name</span></div>
             <div class="col-md-9">
               <div class="input-space">
-                <input formControlName="name" type="text" />
+                <input formControlName="name" type="text" value="this.oldProduct.name" />
                 <div
                   *ngIf="name?.invalid && (name?.dirty || name?.touched)"
                   class="alert alert-danger mt-1"
@@ -137,18 +137,18 @@
             <div class="col-md-2"><span>Units in Stock</span></div>
             <div class="col-md-9">
               <div class="input-space">
-                <input formControlName="unitInStock" type="text" />
+                <input formControlName="unitsInStock" type="text" />
                 <div
                   *ngIf="
-                    unitInStock?.invalid &&
-                    (unitInStock?.dirty || unitInStock?.touched)
+                    unitsInStock?.invalid &&
+                    (unitsInStock?.dirty || unitsInStock?.touched)
                   "
                   class="alert alert-danger mt-1"
                 >
-                  <div *ngIf="unitInStock?.hasError('required')">
+                  <div *ngIf="unitsInStock?.hasError('required')">
                     units in stock is Required.
                   </div>
-                  <div *ngIf="unitInStock?.hasError('pattern')">
+                  <div *ngIf="unitsInStock?.hasError('pattern')">
                     units in stock consists of digits.
                   </div>
                 </div>

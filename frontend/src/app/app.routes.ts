@@ -10,6 +10,8 @@ import { AddProductComponent } from './components/add-product/add-product.compon
 
 
 export const routes: Routes = [
+  {path:'admin/products/add',component:AddProductComponent},
+  {path:'admin/products/update/:id',component:AddProductComponent},
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
   {path:'checkout',component:CheckoutComponent,canActivate:[authGuard]},
@@ -19,7 +21,6 @@ export const routes: Routes = [
   {path:'category/:id',component:ProductListComponent},
   {path:'category',component:ProductListComponent},
   {path:'products',component:ProductListComponent},
-  {path:'admin/products/add',component:AddProductComponent},
   {path:'',redirectTo:'/products',pathMatch:'full'},
   {path:'**',redirectTo:'/products',pathMatch:'full'}
 ];

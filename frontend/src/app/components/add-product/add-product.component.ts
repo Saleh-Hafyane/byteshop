@@ -10,7 +10,8 @@ import {
 import { CustomValidators } from '../../validators/customValidators';
 import { ProductCategory } from '../../common/product-category';
 import { CurrencyPipe, NgForOf, NgIf } from '@angular/common';
-import { ProductManagement } from '../../common/product-management';
+import {ActivatedRoute, Router} from "@angular/router";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-add-product',
@@ -22,8 +23,11 @@ import { ProductManagement } from '../../common/product-management';
 export class AddProductComponent implements OnInit {
   addProductFormGroup!: FormGroup;
   categories: ProductCategory[] = [];
+  isToUpdate: boolean = false;
+  productIdToUpdate: number = 0;
 
-  constructor(private productService: ProductService) {}
+
+  constructor(private productService: ProductService, private route:ActivatedRoute,private router:Router,private http:HttpClient) {}
 
   ngOnInit() {
     this.addProductFormGroup = new FormGroup({
@@ -48,16 +52,29 @@ export class AddProductComponent implements OnInit {
         CustomValidators.notOnlySpaces,
         Validators.pattern('^[0-9]+(\\.[0-9]{1,2})?$'),
       ]),
-      unitInStock: new FormControl('', [
+      unitsInStock: new FormControl('', [
         Validators.required,
         CustomValidators.notOnlySpaces,
         Validators.pattern('^[0-9]+$'),
       ]),
     });
+
     // getting products categories to populate the form
     this.productService
       .getProductCategories()
       .subscribe((data) => (this.categories = data));
+    // to get the product id to update
+    this.route.paramMap.subscribe((params) => {
+      this.isToUpdate = this.route.snapshot.paramMap.has('id');
+      if (this.isToUpdate) {
+        this.productIdToUpdate = Number(this.route.snapshot.paramMap.get('id'));
+        if (this.productIdToUpdate) {
+          this.getProduct(this.productIdToUpdate);
+        }
+      }
+
+    })
+
   }
   get category() {
     return this.addProductFormGroup.get('category');
@@ -74,8 +91,8 @@ export class AddProductComponent implements OnInit {
   get unitPrice() {
     return this.addProductFormGroup.get('unitPrice');
   }
-  get unitInStock() {
-    return this.addProductFormGroup.get('unitInStock');
+  get unitsInStock() {
+    return this.addProductFormGroup.get('unitsInStock');
   }
 
   onSubmit() {
@@ -88,8 +105,8 @@ export class AddProductComponent implements OnInit {
     let imageUrl = this.addProductFormGroup.controls['imageUrl'].value;
     let unitPrice: number =
       +this.addProductFormGroup.controls['unitPrice'].value;
-    let unitInStock: number =
-      +this.addProductFormGroup.controls['unitInStock'].value;
+    let unitsInStock: number =
+      +this.addProductFormGroup.controls['unitsInStock'].value;
     let categoryName: String = JSON.parse(
       JSON.stringify(this.addProductFormGroup.controls['category'].value)
     );
@@ -104,17 +121,58 @@ export class AddProductComponent implements OnInit {
       description: description,
       unitPrice: unitPrice,
       imageUrl: imageUrl,
-      unitsInStock: unitInStock,
+      unitsInStock: unitsInStock,
     };
+    // if the product to updated or added
+    if (this.isToUpdate && this.productIdToUpdate){
+      this.productService.updateProduct(this.productIdToUpdate,addProduct).subscribe({
+        next: () => {
+          alert('Product updated successfully!');
+          this.router.navigate(['/products']);
 
-    this.productService.addProduct(addProduct).subscribe({
-      next: (Response) => {
-        alert('Product added successfully!');
-      },
-      error: (err) => {
-        console.error('Error adding product:', err);
-        alert(`There was an error adding the product: ${err.message}`);
-      },
+        },
+        error: (err) => {
+          console.error('Error updating product:', err);
+          alert(`There was an error updating the product: ${err.message}`);
+        },
+      });
+
+    } else {
+      this.productService.addProduct(addProduct).subscribe({
+        next: () => {
+          alert('Product added successfully!');
+        },
+        error: (err) => {
+          console.error('Error adding product:', err);
+          alert(`There was an error adding the product: ${err.message}`);
+        },
+      });
+    }
+
+  }
+
+
+  private getProduct(id:number){
+    this.productService.getProduct(id).subscribe((data)=>{
+      // patching the data into the form
+      this.addProductFormGroup.patchValue({
+        name: data.name,
+        description: data.description,
+        imageUrl: data.imageUrl,
+        unitPrice: data.unitPrice.toString(),
+        unitsInStock: data.unitsInStock.toString(),
+
+      });
+      // todo: fetch and patch category data into the form
+      const categoryUrl = data._links.category.href
+      this.productService.getProductCategory(categoryUrl).subscribe(data=>{
+        this.addProductFormGroup.patchValue({
+          category: data.categoryName
+        })
+      })
+
     });
+
+
   }
 }
