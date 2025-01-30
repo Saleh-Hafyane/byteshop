@@ -31,5 +31,37 @@
   font-size: 24px;
   color: #FFEDD8;
 }
+/* Admin Add Button */
+.admin-add-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.admin-add-button a {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-decoration: none;
+  background-color: #6d238e;
+  color: white;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.admin-add-button a:hover {
+  background-color: #8b31b3;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+}
+
+.admin-add-button i {
+  font-size: 18px;
+}
 
 

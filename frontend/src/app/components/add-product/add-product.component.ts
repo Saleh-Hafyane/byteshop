@@ -163,7 +163,7 @@ export class AddProductComponent implements OnInit {
         unitsInStock: data.unitsInStock.toString(),
 
       });
-      // todo: fetch and patch category data into the form
+      // fetch and patch category data into the form
       const categoryUrl = data._links.category.href
       this.productService.getProductCategory(categoryUrl).subscribe(data=>{
         this.addProductFormGroup.patchValue({

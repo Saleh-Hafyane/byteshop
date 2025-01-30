@@ -8,8 +8,9 @@
   </a>
 </div>
 <!-- Admin -->
-<div *ngIf="getRole() == 'ADMIN'" class="cart-area">
-  <a routerLink="/admin/products/add">
-    <i class="fa fa-plus" aria-hidden="true">ADD</i>
+<div *ngIf="getRole() == 'ADMIN'" class="admin-add-button">
+  <a routerLink="/admin/products/add" class="btn btn-primary">
+    <i class="fa fa-plus me-2"></i> Add Product
   </a>
 </div>
+
