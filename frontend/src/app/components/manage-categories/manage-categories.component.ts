@@ -1,9 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-
+import {ProductService} from "../../services/product.service";
 import {ProductCategory} from "../../common/product-category";
 import {NgForOf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
-
+import {HttpClient} from "@angular/common/http";
+import {error} from "@angular/compiler-cli/src/transformers/util";
+import {Router} from "@angular/router";
 import {CategoryService} from "../../services/category.service";
 
 @Component({
@@ -19,7 +21,7 @@ import {CategoryService} from "../../services/category.service";
 export class ManageCategoriesComponent implements OnInit{
   categories:ProductCategory[] = []
   newCategory: string = '';
-  constructor(private categoryService:CategoryService) {
+  constructor(private categoryService:CategoryService, private http: HttpClient, private router: Router) {
   }
   ngOnInit() {
     this.getCategories()
@@ -45,7 +47,7 @@ export class ManageCategoriesComponent implements OnInit{
 
     // Send a POST request to the backend
     this.categoryService.addProductCategory(newCategoryData).subscribe({
-        next: () => {
+        next: (v) => {
           this.newCategory = ''; // Clear the input field
           this.categoryService.notifyCategoryAdded(); // Notify the category service
           this.getCategories(); // Refresh the list of categories
@@ -61,7 +63,7 @@ export class ManageCategoriesComponent implements OnInit{
 
   remCategory(id: number) {
     this.categoryService.removeProductCategory(id).subscribe({
-      next: () => {
+      next: (v) => {
         this.categoryService.notifyCategoryAdded(); // Notify the category service
         this.getCategories(); // Refresh the list of categories
       },
