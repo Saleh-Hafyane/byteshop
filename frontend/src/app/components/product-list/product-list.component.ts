@@ -14,7 +14,6 @@ import { AuthService } from '../../services/auth.service';
   imports: [
     NgForOf,
     CurrencyPipe,
-    NgOptimizedImage,
     NgIf,
     RouterLink,
     NgbPagination,

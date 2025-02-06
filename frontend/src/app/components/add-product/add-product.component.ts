@@ -10,13 +10,14 @@ import {
 import { CustomValidators } from '../../validators/customValidators';
 import { ProductCategory } from '../../common/product-category';
 import { CurrencyPipe, NgForOf, NgIf } from '@angular/common';
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
+import {CategoryService} from "../../services/category.service";
 
 @Component({
   selector: 'app-add-product',
   templateUrl: './add-product.component.html',
-  imports: [ReactiveFormsModule, NgForOf, NgIf],
+  imports: [ReactiveFormsModule, NgForOf, NgIf, RouterLink],
   styleUrls: ['./add-product.component.css'],
   standalone: true,
 })
@@ -27,7 +28,7 @@ export class AddProductComponent implements OnInit {
   productIdToUpdate: number = 0;
 
 
-  constructor(private productService: ProductService, private route:ActivatedRoute,private router:Router,private http:HttpClient) {}
+  constructor(private productService: ProductService, private route:ActivatedRoute,private router:Router,private http:HttpClient,private categoryService:CategoryService) {}
 
   ngOnInit() {
     this.addProductFormGroup = new FormGroup({
@@ -60,7 +61,7 @@ export class AddProductComponent implements OnInit {
     });
 
     // getting products categories to populate the form
-    this.productService
+    this.categoryService
       .getProductCategories()
       .subscribe((data) => (this.categories = data));
     // to get the product id to update
@@ -165,7 +166,7 @@ export class AddProductComponent implements OnInit {
       });
       // fetch and patch category data into the form
       const categoryUrl = data._links.category.href
-      this.productService.getProductCategory(categoryUrl).subscribe(data=>{
+      this.categoryService.getProductCategory(categoryUrl).subscribe(data=>{
         this.addProductFormGroup.patchValue({
           category: data.categoryName
         })

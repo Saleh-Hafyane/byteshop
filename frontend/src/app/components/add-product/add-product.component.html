@@ -9,13 +9,20 @@
           <div class="row">
             <div class="col-md-2"><span>Category</span></div>
             <div class="col-md-9">
+              <div>
+                <button routerLink="/admin/categories/" class="btn btn-primary mb-2 manage-category">
+                  <i class="fa fa-plus me-2"></i> Manage Categories
+                </button>
+              </div>
               <div class="input-space">
+
                 <select formControlName="category">
                   <option></option>
                   <option *ngFor="let category of categories">
                     {{ category.categoryName }}
                   </option>
                 </select>
+
                 <div
                   *ngIf="
                     category?.invalid && (category?.dirty || category?.touched)

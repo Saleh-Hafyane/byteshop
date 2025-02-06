@@ -9,7 +9,6 @@ import { ProductCategory } from '../common/product-category';
 export class ProductService {
   // API endpoints for products and product categories
   private baseUrl = 'http://localhost:8080/api/products';
-  private categoryUrl = 'http://localhost:8080/api/product-category';
   private baseAdminUrl = 'http://localhost:8080/api/admin/products';
 
   // BehaviorSubject to hold and broadcast product stock availability
@@ -42,12 +41,7 @@ export class ProductService {
     return this.httpClientProduct(searchUrl);
   }
 
-  // Retrieves the list of product categories.
-  getProductCategories(): Observable<ProductCategory[]> {
-    return this.httpClient
-      .get<GetResponseProductCategory>(this.categoryUrl)
-      .pipe(map((response) => response._embedded.productCategory));
-  }
+
 
   // Retrieves paginated products based on a search keyword.
   getProductsSearchPagination(
@@ -65,10 +59,7 @@ export class ProductService {
     const productUrl = `${this.baseUrl}/${productId}`;
     return this.httpClient.get<Product>(productUrl);
   }
-  // retrieve category by category url
-  getProductCategory(categoryUrl: string): Observable<ProductCategory> {
-    return  this.httpClient.get<ProductCategory>(categoryUrl)
-  }
+
 
   // Helper function to perform HTTP GET requests for product data.
   httpClientProduct(url: string): Observable<GetResponseProduct> {
@@ -127,9 +118,11 @@ export class ProductService {
       headers,
     });
   }
+
+
 }
 
-// Interfaces to define the structure of API responses
+// Interface to define the structure of API responses
 interface GetResponseProduct {
   _embedded: {
     products: Product[];
@@ -142,8 +135,4 @@ interface GetResponseProduct {
   };
 }
 
-interface GetResponseProductCategory {
-  _embedded: {
-    productCategory: ProductCategory[];
-  };
-}
+

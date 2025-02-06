@@ -7,7 +7,7 @@
     <i class="fa fa-shopping-cart" aria-hidden="true"></i>
   </a>
 </div>
-<!-- Admin -->
+<!-- Admin: it show an add product button instead of the cart status -->
 <div *ngIf="getRole() == 'ADMIN'" class="admin-add-button">
   <a routerLink="/admin/products/add" class="btn btn-primary">
     <i class="fa fa-plus me-2"></i> Add Product

@@ -73,3 +73,12 @@ h3 {
   background-color: #240A34;
   color: #FFEDD8;
 }
+.manage-category{
+  background-color: #6d238e;
+  border-color: #6d238e;
+  margin-left: 1rem;
+}
+.manage-category:hover{
+  background-color: #8b31b3;
+  border-color: #8b31b3;
+}

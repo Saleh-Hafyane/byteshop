@@ -5,7 +5,7 @@
       <div class="product-info">
         <h2 class="product-name fw-bold mb-3">{{product.name}}</h2>
         <div class="price text-primary fs-4 mb-4">{{product.unitPrice | currency: 'MAD '}}</div>
-        <a (click)="addToCart()" class="primary-btn">Add To Cart</a>
+        <a *ngIf="getRole() == 'USER' || getRole() == undefined" (click)="addToCart()" class="primary-btn">Add To Cart</a>
         <hr>
         <h3 class="fs-5 text-secondary mt-4">Description</h3>
         <p class="product-description text-muted">{{product.description}}</p>

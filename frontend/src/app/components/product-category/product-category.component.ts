@@ -3,6 +3,7 @@ import {ProductCategory} from "../../common/product-category";
 import {ProductService} from "../../services/product.service";
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {NgForOf} from "@angular/common";
+import {CategoryService} from "../../services/category.service";
 
 @Component({
   selector: 'app-product-category',
@@ -17,16 +18,19 @@ import {NgForOf} from "@angular/common";
 })
 export class ProductCategoryComponent implements OnInit{
   productCategories:ProductCategory[]=[]
-  constructor(private productService:ProductService) {
+  constructor(private categoryService:CategoryService) {
 
   }
   ngOnInit() {
-    this.productCategoryList()
+    this.productCategoryList() // initialize the list of categories
+    this.categoryService.categoryAdded$.subscribe(() => {
+      this.productCategoryList(); // Refresh when notified
+    });
   }
 
 
   private productCategoryList() {
-    this.productService.getProductCategories().subscribe(data=>{
+    this.categoryService.getProductCategories().subscribe(data=>{
 
       this.productCategories=data});
   }

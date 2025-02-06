@@ -2,9 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {Product} from "../../common/product";
 import {ProductService} from "../../services/product.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
-import {CurrencyPipe, NgOptimizedImage} from "@angular/common";
+import {CurrencyPipe, NgIf, NgOptimizedImage} from "@angular/common";
 import {CartItem} from "../../common/cart-item";
 import {CartService} from "../../services/cart.service";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-product-detail',
@@ -12,17 +13,20 @@ import {CartService} from "../../services/cart.service";
   imports: [
     CurrencyPipe,
     RouterLink,
-    NgOptimizedImage
+    NgIf,
   ],
   templateUrl: './product-detail.component.html',
   styleUrl: './product-detail.component.css'
 })
 export class ProductDetailComponent implements OnInit{
   product!:Product;
-  constructor(private productService:ProductService,private cartService:CartService,private route:ActivatedRoute) {
+  constructor(private productService:ProductService,private cartService:CartService,private route:ActivatedRoute,private authService:AuthService) {
   }
   ngOnInit() {
     this.route.paramMap.subscribe(value => this.getProductDetail())
+  }
+  getRole() {
+    return this.authService.getRole();
   }
 
   private getProductDetail() {

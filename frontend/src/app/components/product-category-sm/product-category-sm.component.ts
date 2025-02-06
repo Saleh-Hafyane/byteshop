@@ -3,6 +3,7 @@ import {RouterLink, RouterLinkActive} from "@angular/router";
 import {ProductCategory} from "../../common/product-category";
 import {ProductService} from "../../services/product.service";
 import {NgForOf} from "@angular/common";
+import {CategoryService} from "../../services/category.service";
 
 @Component({
   selector: 'app-product-category-sm',
@@ -18,7 +19,7 @@ import {NgForOf} from "@angular/common";
 export class ProductCategorySmComponent implements OnInit {
   menuActive = false;
   productCategories:ProductCategory[]=[]
-  constructor(private productService:ProductService) {
+  constructor(private categoryService:CategoryService) {
 
   }
   ngOnInit() {
@@ -27,7 +28,7 @@ export class ProductCategorySmComponent implements OnInit {
 
 
   private productCategoryList() {
-    this.productService.getProductCategories().subscribe(data=>{
+    this.categoryService.getProductCategories().subscribe(data=>{
 
       this.productCategories=data});
   }
