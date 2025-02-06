@@ -1,0 +1,21 @@
+.add-category {
+  display: flex;
+  align-items: center;
+}
+.add-category button{
+  align-items: center;
+  background-color: #6d238e;
+  border-color: #6d238e;
+  margin-left: 1rem;
+  padding: .4rem .8rem;
+}
+.add-category button:hover{
+  background-color: #8b31b3;
+}
+.add-category input{
+  align-items: center;
+  background-color: #dfd9e3;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
