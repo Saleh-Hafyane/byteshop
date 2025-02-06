@@ -1,0 +1,37 @@
+<div class="main-content page-m mt-4">
+  <div class="section-content section-content-p30">
+    <div class="container-fluid">
+      <table class="table table-bordered cart-table">
+        <thead>
+          <tr>
+            <th>Categories</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="2" class="add-category" >
+              <input [(ngModel)]="newCategory" placeholder="Enter category name" />
+              <button (click)="addCategory()" class="btn btn-primary btn-sm mt-2">Add Category</button>
+            </td>
+          </tr>
+          <tr *ngFor="let category of categories">
+            <td>{{category.categoryName}}</td>
+            <td>
+              <div>
+                <div>
+
+                  <button (click)="remCategory(category.id)" class="btn btn-danger btn-sm mt-2">Delete</button>
+                </div>
+              </div>
+            </td>
+
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+  </div>
+
+</div>
