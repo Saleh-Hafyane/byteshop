@@ -31,7 +31,7 @@ export class ProductCategoryComponent implements OnInit{
 
   private productCategoryList() {
     this.categoryService.getProductCategories().subscribe(data=>{
-
+      console.log('Fetched categories:', data);
       this.productCategories=data});
   }
 
