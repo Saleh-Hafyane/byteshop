@@ -26,6 +26,7 @@ Before running the application, make sure you have the following installed:
 - **Node.js** (v18+) and **npm**
 - **MySQL Server** (listening on `localhost:3306`)
 - **Maven** (optional, wrapper script `mvn` is included)
+**note** : i used WSL while developing this projects
 
 ---
 
