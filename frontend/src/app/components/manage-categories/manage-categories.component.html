@@ -1,37 +1,46 @@
 <div class="main-content page-m mt-4">
   <div class="section-content section-content-p30">
     <div class="container-fluid">
+      <h4 class="mb-3">Manage Categories</h4>
       <table class="table table-bordered cart-table">
         <thead>
           <tr>
-            <th>Categories</th>
+            <th>Category Name</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
+          <!-- Add new category row -->
           <tr>
-            <td colspan="2" class="add-category" >
-              <input [(ngModel)]="newCategory" placeholder="Enter category name" />
-              <button (click)="addCategory()" class="btn btn-primary btn-sm mt-2">Add Category</button>
+            <td colspan="2" class="add-category">
+              <input [(ngModel)]="newCategory" placeholder="Enter category name" class="form-control d-inline-block w-auto" />
+              <button (click)="addCategory()" class="btn btn-primary btn-sm ms-2">Add Category</button>
             </td>
           </tr>
+          <!-- Category rows -->
           <tr *ngFor="let category of categories">
-            <td>{{category.categoryName}}</td>
-            <td>
-              <div>
-                <div>
+            <!-- View mode -->
+            <td *ngIf="editingCategoryId !== category.id">{{ category.categoryName }}</td>
+            <!-- Edit mode -->
+            <td *ngIf="editingCategoryId === category.id">
+              <input [(ngModel)]="editingCategoryName" class="form-control d-inline-block w-auto" />
+            </td>
 
-                  <button (click)="remCategory(category.id)" class="btn btn-danger btn-sm mt-2">Delete</button>
-                </div>
+            <td>
+              <!-- View mode actions -->
+              <div *ngIf="editingCategoryId !== category.id">
+                <button (click)="startEdit(category)" class="btn btn-warning btn-sm me-2">Edit</button>
+                <button (click)="remCategory(category.id)" class="btn btn-danger btn-sm">Delete</button>
+              </div>
+              <!-- Edit mode actions -->
+              <div *ngIf="editingCategoryId === category.id">
+                <button (click)="saveEdit(category.id)" class="btn btn-success btn-sm me-2">Save</button>
+                <button (click)="cancelEdit()" class="btn btn-secondary btn-sm">Cancel</button>
               </div>
             </td>
-
           </tr>
         </tbody>
-
       </table>
     </div>
-
   </div>
-
 </div>

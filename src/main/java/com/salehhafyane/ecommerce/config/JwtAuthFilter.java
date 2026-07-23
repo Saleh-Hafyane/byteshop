@@ -50,7 +50,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         final String jwtToken = authorizationHeader.replace("Bearer ", "");
 
-        final String username = jwtService.extractUsername(jwtToken);
+        String username = null;
+        try {
+            username = jwtService.extractUsername(jwtToken);
+        } catch (Exception e) {
+            // Invalid or malformed token, proceed without authentication context
+        }
 
         // Check if a username is extracted and if the current security context is not already authenticated
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

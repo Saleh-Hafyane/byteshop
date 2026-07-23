@@ -36,9 +36,17 @@ export class CategoryService {
   }
 
   removeProductCategory(id: number): Observable<any> {
-    return this.httpClient.delete<any>(`${this.categoryUrl}/remove/${id}`);
-
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.httpClient.delete<any>(`${this.categoryUrl}/remove/${id}`, { headers });
   }
+
+  updateProductCategory(id: number, categoryName: string): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.httpClient.put<any>(`${this.categoryUrl}/update/${id}`, { categoryName }, { headers });
+  }
+
 }
 // Interface to define the structure of API responses
 interface GetResponseProductCategory {
