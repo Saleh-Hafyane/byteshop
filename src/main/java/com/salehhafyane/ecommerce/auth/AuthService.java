@@ -37,6 +37,11 @@ public class AuthService {
     * and assigning a default role. It then generates a JWT token for the user.
     */
     public AuthenticationResponse register(RegisterRequest request) {
+        // Check if username is already taken to prevent duplicates.
+        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+            throw new IllegalArgumentException("Username already exists: " + request.getUsername());
+        }
+
         // Build a new User entity based on the registration request data.
         var user = User.builder()
                 .firstname(request.getFirstname())
