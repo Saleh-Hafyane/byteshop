@@ -45,6 +45,22 @@ CREATE TABLE `city` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Seed data for table `city`
+--
+
+LOCK TABLES `city` WRITE;
+/*!40000 ALTER TABLE `city` DISABLE KEYS */;
+INSERT INTO `city` (`id`, `city_name`) VALUES
+(1,'Casablanca'),
+(2,'Rabat'),
+(3,'Marrakech'),
+(4,'Fes'),
+(5,'Tangier'),
+(6,'Agadir');
+/*!40000 ALTER TABLE `city` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `db_user`
 --
 
@@ -60,16 +76,19 @@ CREATE TABLE `db_user` (
   `role` enum('USER','ADMIN') DEFAULT NULL,
   `username` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `db_user`
+-- Seed data for table `db_user`
+-- Passwords: admin -> 'admin', testuser -> 'password'
 --
 
 LOCK TABLES `db_user` WRITE;
 /*!40000 ALTER TABLE `db_user` DISABLE KEYS */;
-INSERT INTO `db_user` VALUES (1,'admin@example.com','Admin','System','$2a$10$eU965.y7V1tOveqT9C6JkOqgX2gNlyC5j87Q2TqZfW.gG4eYly5C.','ADMIN','admin');
+INSERT INTO `db_user` (`id`, `email`, `firstname`, `lastname`, `password`, `role`, `username`) VALUES
+(1,'admin@example.com','Admin','System','$2a$10$dCwH3P8/MyAICNvL95dVUOQZhKOYbtyNh7X90P.L/WwDFkTMQA.Iy','ADMIN','admin'),
+(2,'user@example.com','Test','User','$2a$10$NSnhZcKFPWV0cNjbvmYaPOMyP75kJFj5o0Bhrx7o2K9.oMIfkRKPe','USER','testuser');
 /*!40000 ALTER TABLE `db_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -119,6 +138,33 @@ CREATE TABLE `orders` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `product_category`
+--
+
+DROP TABLE IF EXISTS `product_category`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `product_category` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `category_name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Seed data for table `product_category`
+--
+
+LOCK TABLES `product_category` WRITE;
+/*!40000 ALTER TABLE `product_category` DISABLE KEYS */;
+INSERT INTO `product_category` (`id`, `category_name`) VALUES
+(1,'Electronics'),
+(2,'Books'),
+(3,'Clothing');
+/*!40000 ALTER TABLE `product_category` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `product`
 --
 
@@ -142,18 +188,21 @@ CREATE TABLE `product` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `product_category`
+-- Seed data for table `product`
 --
 
-DROP TABLE IF EXISTS `product_category`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `product_category` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `category_name` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+LOCK TABLES `product` WRITE;
+/*!40000 ALTER TABLE `product` DISABLE KEYS */;
+INSERT INTO `product` (`id`, `date_created`, `description`, `image_url`, `last_updated`, `name`, `unit_price`, `units_in_stock`, `category_id`) VALUES
+(1,'2026-01-01 00:00:00.000000','Latest smartphone with advanced features','https://via.placeholder.com/150','2026-01-01 00:00:00.000000','Smartphone X1',699.99,50,1),
+(2,'2026-01-01 00:00:00.000000','High-quality wireless headphones','https://via.placeholder.com/150','2026-01-01 00:00:00.000000','Wireless Headphones',149.99,100,1),
+(3,'2026-01-01 00:00:00.000000','Comprehensive guide to Spring Boot','https://via.placeholder.com/150','2026-01-01 00:00:00.000000','Spring Boot in Action',49.99,75,2),
+(4,'2026-01-01 00:00:00.000000','Angular development handbook','https://via.placeholder.com/150','2026-01-01 00:00:00.000000','Angular Masterclass',59.99,60,2),
+(5,'2026-01-01 00:00:00.000000','Comfortable cotton t-shirt','https://via.placeholder.com/150','2026-01-01 00:00:00.000000','Classic T-Shirt',29.99,200,3),
+(6,'2026-01-01 00:00:00.000000','Durable denim jeans','https://via.placeholder.com/150','2026-01-01 00:00:00.000000','Denim Jeans',79.99,150,3);
+/*!40000 ALTER TABLE `product` ENABLE KEYS */;
+UNLOCK TABLES;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -164,4 +213,5 @@ CREATE TABLE `product_category` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-07-18 13:00:26
+-- Dump completed
+
