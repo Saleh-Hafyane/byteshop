@@ -1,21 +1,19 @@
 package com.salehhafyane.ecommerce.config;
 
-import com.salehhafyane.ecommerce.entity.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-/**
- * Security configuration class for customizing Spring Security.
- * It sets up JWT-based authentication, session management, and access control rules.
- */
+// Security configuration class for customizing Spring Security.
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -33,13 +31,16 @@ public class SecurityConfig {
         http
                 // Disable CSRF protection since the application uses JWT for authentication.
                 .csrf(AbstractHttpConfigurer::disable)
-
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                )
                 // Configure request authorization rules.
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/api/checkout/**").hasRole("USER") // Protect the `/api/checkout/**` endpoints.
-                            .requestMatchers("/api/admin/**").hasRole("ADMIN") // Protect the `/api/admin/**` endpoints.
-                            .anyRequest()                       // All other endpoints.
-                            .permitAll();                       // Allow access without authentication.
+                    auth.requestMatchers("/api/v1/auth/**").permitAll() // Auth endpoints are public.
+                            .requestMatchers("/error").permitAll()      // Allow Spring's error dispatch (needed for GlobalExceptionHandler).
+                            .requestMatchers("/api/checkout/**").hasRole("USER") // Protect checkout endpoints.
+                            .requestMatchers("/api/admin/**").hasRole("ADMIN")   // Protect admin endpoints.
+                            .anyRequest().permitAll();
                 })
 
                 // Configure session management to use stateless sessions (since JWT is used).
