@@ -3,6 +3,7 @@ package com.salehhafyane.ecommerce.auth;
 import com.salehhafyane.ecommerce.config.JwtService;
 import com.salehhafyane.ecommerce.entity.Role;
 import com.salehhafyane.ecommerce.entity.User;
+import com.salehhafyane.ecommerce.exceptions.UserAlreadyExistsException;
 import com.salehhafyane.ecommerce.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -33,13 +34,18 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     /*
-    * Registers a new user by saving their information in the database, encrypting the password,
-    * and assigning a default role. It then generates a JWT token for the user.
+    Registers a new user by saving their information in the database, encrypting the password, and assigning a default role.
+    It then generates a JWT token for the user.
     */
     public AuthenticationResponse register(RegisterRequest request) {
         // Check if username is already taken to prevent duplicates.
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("Username already exists: " + request.getUsername());
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new UserAlreadyExistsException("username", "Username already exists: " + request.getUsername());
+        }
+
+        // Check if email is already registered.
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new UserAlreadyExistsException("email", "Email already in use: " + request.getEmail());
         }
 
         // Build a new User entity based on the registration request data.
@@ -68,8 +74,8 @@ public class AuthService {
     }
 
     /*
-     * Authenticates an existing user by verifying the username and password.
-     * Generates and returns a JWT token if authentication is successful.
+     Authenticates an existing user by verifying the username and password.
+     Generates and returns a JWT token if authentication is successful.
     */
     public AuthenticationResponse authenticate(AuthRequest request) {
         // Authenticate the user using the provided credentials.
