@@ -1,10 +1,13 @@
 <div class="register-container container mt-5">
   <h2 class="text-center mb-4">Register</h2>
   <form (ngSubmit)="register()" [formGroup]="registerData">
+    <!-- Dynamic Server / General Error Alert Banner -->
+    <div *ngIf="errorMessage" class="alert alert-danger mt-1 alert-dismissible fade show" role="alert">
+      {{ errorMessage }}
+    </div>
+
+    <!-- First Name -->
     <div class="form-group mb-3">
-      <div *ngIf="registerFailed" class="alert alert-danger mt-1">
-        Register Failed. Please try again.
-      </div>
       <label for="firstname" class="form-label">First Name</label>
       <input
         type="text"
@@ -12,18 +15,25 @@
         name="firstname"
         formControlName="firstname"
         class="form-control"
+        (input)="clearFieldError('firstname')"
         required
       />
-      <div *ngIf="firstName?.invalid && (firstName?.dirty||firstName?.touched)" class="alert alert-danger mt-1">
-        <div *ngIf="firstName?.hasError('required')||firstName?.hasError('notOnlySpaces')">
-                            First Name is Required.
+      <!-- Client-side validation -->
+      <div *ngIf="firstName?.invalid && (firstName?.dirty || firstName?.touched)" class="alert alert-danger mt-1">
+        <div *ngIf="firstName?.hasError('required') || firstName?.hasError('notOnlySpaces')">
+          First Name is Required.
         </div>
         <div *ngIf="firstName?.hasError('minlength')">
-                            First Name is too short.
+          First Name is too short.
         </div>
+      </div>
+      <!-- Server-side validation error -->
+      <div *ngIf="fieldErrors['firstname']" class="alert alert-danger mt-1">
+        {{ fieldErrors['firstname'] }}
       </div>
     </div>
 
+    <!-- Last Name -->
     <div class="form-group mb-3">
       <label for="lastname" class="form-label">Last Name</label>
       <input
@@ -32,20 +42,25 @@
         name="lastname"
         formControlName="lastname"
         class="form-control"
+        (input)="clearFieldError('lastname')"
         required
       />
-      <div *ngIf="lastName?.invalid && (lastName?.dirty||lastName?.touched)" class="alert alert-danger mt-1">
-        <div *ngIf="lastName?.hasError('required')||lastName?.hasError('notOnlySpaces')">
-                            Last Name is Required.
+      <!-- Client-side validation -->
+      <div *ngIf="lastName?.invalid && (lastName?.dirty || lastName?.touched)" class="alert alert-danger mt-1">
+        <div *ngIf="lastName?.hasError('required') || lastName?.hasError('notOnlySpaces')">
+          Last Name is Required.
         </div>
         <div *ngIf="lastName?.hasError('minlength')">
-                            Last Name is too short.
+          Last Name is too short.
         </div>
-
-
+      </div>
+      <!-- Server-side validation error -->
+      <div *ngIf="fieldErrors['lastname']" class="alert alert-danger mt-1">
+        {{ fieldErrors['lastname'] }}
       </div>
     </div>
 
+    <!-- Username -->
     <div class="form-group mb-3">
       <label for="username" class="form-label">Username</label>
       <input
@@ -54,20 +69,25 @@
         name="username"
         formControlName="username"
         class="form-control"
+        (input)="clearFieldError('username')"
         required
       />
-      <div *ngIf="username?.invalid && (username?.dirty||username?.touched)" class="alert alert-danger mt-1">
-        <div *ngIf="username?.hasError('required')||username?.hasError('notOnlySpaces')">
+      <!-- Client-side validation -->
+      <div *ngIf="username?.invalid && (username?.dirty || username?.touched)" class="alert alert-danger mt-1">
+        <div *ngIf="username?.hasError('required') || username?.hasError('notOnlySpaces')">
           Username is Required.
         </div>
         <div *ngIf="username?.hasError('minlength')">
           Username is too short.
         </div>
-
-
+      </div>
+      <!-- Server-side validation error (e.g. duplicate username) -->
+      <div *ngIf="fieldErrors['username']" class="alert alert-danger mt-1">
+        {{ fieldErrors['username'] }}
       </div>
     </div>
 
+    <!-- Email -->
     <div class="form-group mb-3">
       <label for="email" class="form-label">Email</label>
       <input
@@ -76,20 +96,25 @@
         name="email"
         formControlName="email"
         class="form-control"
+        (input)="clearFieldError('email')"
         required
       />
-      <div *ngIf="email?.invalid && (email?.dirty||email?.touched)" class="alert alert-danger mt-1">
-        <div *ngIf="email?.hasError('required')||email?.hasError('notOnlySpaces')">
+      <!-- Client-side validation -->
+      <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="alert alert-danger mt-1">
+        <div *ngIf="email?.hasError('required') || email?.hasError('notOnlySpaces')">
           Email is Required.
         </div>
         <div *ngIf="email?.hasError('pattern')">
           Email is not in a valid pattern.
         </div>
-
-
+      </div>
+      <!-- Server-side validation error (e.g. duplicate email) -->
+      <div *ngIf="fieldErrors['email']" class="alert alert-danger mt-1">
+        {{ fieldErrors['email'] }}
       </div>
     </div>
 
+    <!-- Password -->
     <div class="form-group mb-3">
       <label for="password" class="form-label">Password</label>
       <input
@@ -98,20 +123,28 @@
         name="password"
         formControlName="password"
         class="form-control"
+        (input)="clearFieldError('password')"
         required
       />
-      <div *ngIf="password?.invalid && (password?.dirty||password?.touched)" class="alert alert-danger mt-1">
-        <div *ngIf="password?.hasError('required')||password?.hasError('notOnlySpaces')">
+      <!-- Client-side validation -->
+      <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="alert alert-danger mt-1">
+        <div *ngIf="password?.hasError('required') || password?.hasError('notOnlySpaces')">
           Password is Required.
         </div>
         <div *ngIf="password?.hasError('minlength')">
           Password is too short.
         </div>
-
-
+      </div>
+      <!-- Server-side validation error -->
+      <div *ngIf="fieldErrors['password']" class="alert alert-danger mt-1">
+        {{ fieldErrors['password'] }}
       </div>
     </div>
 
-    <button type="submit" class="btn w-100">Register</button>
+    <button type="submit" class="btn w-100" [disabled]="isSubmitting">
+      <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+      Register
+    </button>
   </form>
 </div>
+

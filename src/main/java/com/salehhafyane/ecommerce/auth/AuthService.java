@@ -38,14 +38,16 @@ public class AuthService {
     It then generates a JWT token for the user.
     */
     public AuthenticationResponse register(RegisterRequest request) {
-        // Check if username is already taken to prevent duplicates.
+        // Check if username and/or email are already taken to prevent duplicates.
+        Map<String, String> duplicateErrors = new HashMap<>();
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new UserAlreadyExistsException("username", "Username already exists: " + request.getUsername());
+            duplicateErrors.put("username", "Username already exists: " + request.getUsername());
         }
-
-        // Check if email is already registered.
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new UserAlreadyExistsException("email", "Email already in use: " + request.getEmail());
+            duplicateErrors.put("email", "Email already in use: " + request.getEmail());
+        }
+        if (!duplicateErrors.isEmpty()) {
+            throw new UserAlreadyExistsException("Registration failed due to existing credentials", duplicateErrors);
         }
 
         // Build a new User entity based on the registration request data.

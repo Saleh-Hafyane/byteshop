@@ -1,6 +1,12 @@
 <div class="login-container container mt-5">
   <h2 class="text-center mb-4">Login</h2>
   <form (ngSubmit)="login()" [formGroup]="loginData">
+    <!-- Dynamic Server / General Error Alert Banner -->
+    <div *ngIf="errorMessage" class="alert alert-danger mt-1 alert-dismissible fade show" role="alert">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Username -->
     <div class="form-group mb-3">
       <label for="username" class="form-label">Username</label>
       <input
@@ -9,10 +15,17 @@
         formControlName="username"
         name="username"
         class="form-control"
+        (input)="clearError()"
         required
       />
+      <div *ngIf="username?.invalid && (username?.dirty || username?.touched)" class="alert alert-danger mt-1">
+        <div *ngIf="username?.hasError('required')">
+          Username is Required.
+        </div>
+      </div>
     </div>
 
+    <!-- Password -->
     <div class="form-group mb-3">
       <label for="password" class="form-label">Password</label>
       <input
@@ -21,17 +34,23 @@
         formControlName="password"
         name="password"
         class="form-control"
+        (input)="clearError()"
         required
       />
+      <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="alert alert-danger mt-1">
+        <div *ngIf="password?.hasError('required')">
+          Password is Required.
+        </div>
+      </div>
     </div>
-    <div *ngIf="loginFailed" class="alert alert-danger mt-1">
-      Invalid Username or Password
 
-    </div>
-
-    <button type="submit" class="btn w-100">Login</button>
+    <button type="submit" class="btn w-100" [disabled]="isSubmitting">
+      <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+      Login
+    </button>
     <div class="text-center mt-3">
       <a routerLink="/register">Or create an account</a>
     </div>
   </form>
 </div>
+

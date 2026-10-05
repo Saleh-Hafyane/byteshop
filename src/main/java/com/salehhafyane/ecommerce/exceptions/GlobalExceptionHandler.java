@@ -34,7 +34,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ApiError> handleUserAlreadyExists(UserAlreadyExistsException ex) {
         Map<String, String> errors = new HashMap<>();
-        if (ex.getField() != null) {
+        if (ex.getFieldErrors() != null && !ex.getFieldErrors().isEmpty()) {
+            errors.putAll(ex.getFieldErrors());
+        } else if (ex.getField() != null) {
             errors.put(ex.getField(), ex.getMessage());
         }
         ApiError apiError = new ApiError(
