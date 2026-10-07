@@ -1,6 +1,6 @@
 package com.salehhafyane.ecommerce.controller;
 
-import com.salehhafyane.ecommerce.entity.Product;
+import com.salehhafyane.ecommerce.dto.ProductDTO;
 import com.salehhafyane.ecommerce.service.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,14 +19,14 @@ public class AdminProductController {
 
     /** CREATE */
     @PostMapping("/add")
-    public ResponseEntity<?> addProduct(@RequestBody Product product) {
+    public ResponseEntity<?> addProduct(@RequestBody ProductDTO product) {
         productService.save(product);
         return ResponseEntity.ok().body(Map.of("message", "Product added successfully!"));
     }
 
     /** READ – all products */
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
         return ResponseEntity.ok(productService.getAll());
     }
 
@@ -40,7 +40,7 @@ public class AdminProductController {
 
     /** UPDATE */
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody Product product) {
+    public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody ProductDTO product) {
         productService.update(id, product);
         return ResponseEntity.ok().body(Map.of("message", "Product updated successfully!"));
     }

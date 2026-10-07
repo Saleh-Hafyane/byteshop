@@ -115,9 +115,7 @@ export class AddProductComponent implements OnInit {
       return c.categoryName === categoryName;
     });
     const addProduct = {
-      category: {
-        id: category[0].id,
-      },
+      categoryId: category[0].id,
       name: name,
       description: description,
       unitPrice: unitPrice,

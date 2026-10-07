@@ -1,6 +1,6 @@
 package com.salehhafyane.ecommerce.controller;
 
-import com.salehhafyane.ecommerce.entity.ProductCategory;
+import com.salehhafyane.ecommerce.dto.ProductCategoryDTO;
 import com.salehhafyane.ecommerce.service.IProductCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,14 +19,14 @@ public class ProductCategoryController {
 
     /** CREATE */
     @PostMapping("/add")
-    public ResponseEntity<ProductCategory> addCategory(@RequestBody ProductCategory category) {
-        ProductCategory newCategory = categoryService.addCategory(category);
+    public ResponseEntity<ProductCategoryDTO> addCategory(@RequestBody ProductCategoryDTO category) {
+        ProductCategoryDTO newCategory = categoryService.addCategory(category);
         return new ResponseEntity<>(newCategory, HttpStatus.CREATED);
     }
 
     /** READ – all categories */
     @GetMapping("/all")
-    public ResponseEntity<List<ProductCategory>> getAllCategories() {
+    public ResponseEntity<List<ProductCategoryDTO>> getAllCategories() {
         return ResponseEntity.ok(categoryService.getAll());
     }
 
@@ -40,9 +40,9 @@ public class ProductCategoryController {
 
     /** UPDATE */
     @PutMapping("/update/{id}")
-    public ResponseEntity<ProductCategory> updateCategory(@PathVariable Long id,
-                                                          @RequestBody ProductCategory category) {
-        ProductCategory updated = categoryService.updateCategory(id, category);
+    public ResponseEntity<ProductCategoryDTO> updateCategory(@PathVariable Long id,
+                                                          @RequestBody ProductCategoryDTO category) {
+        ProductCategoryDTO updated = categoryService.updateCategory(id, category);
         return ResponseEntity.ok(updated);
     }
 
