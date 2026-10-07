@@ -1,5 +1,6 @@
 package com.salehhafyane.ecommerce.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,6 +17,7 @@ public class  Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "category_id",nullable = false)
     private ProductCategory category;

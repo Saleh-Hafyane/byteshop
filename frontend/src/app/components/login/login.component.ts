@@ -79,7 +79,7 @@ export class LoginComponent {
         'Unable to reach server. Please check your connection and try again.';
       return;
     }
-
+    
     const apiError = error.error as ApiError | undefined;
     if (apiError && typeof apiError === 'object' && apiError.message) {
       this.errorMessage = apiError.message;

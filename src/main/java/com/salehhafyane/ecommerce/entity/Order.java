@@ -1,5 +1,6 @@
 package com.salehhafyane.ecommerce.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -42,12 +43,15 @@ private Long id;
     @Column(name = "total_quantity", nullable = false)
     private Integer totalQuantity;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
     private Set<OrderItem> orderItems = new HashSet<>();
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;

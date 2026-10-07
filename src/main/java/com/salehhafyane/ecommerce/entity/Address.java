@@ -1,5 +1,6 @@
 package com.salehhafyane.ecommerce.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,7 @@ public class Address {
     private String city;
     @Column(name = "full_address")
     private String fullAddress;
+    @JsonIgnore
     @OneToOne
     @PrimaryKeyJoinColumn
     private Order order;
