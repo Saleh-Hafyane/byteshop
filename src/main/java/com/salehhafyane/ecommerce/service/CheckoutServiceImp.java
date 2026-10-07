@@ -1,6 +1,8 @@
 package com.salehhafyane.ecommerce.service;
 
-import com.salehhafyane.ecommerce.dto.Purchase;
+import com.salehhafyane.ecommerce.dto.OrderItemDTO;
+import com.salehhafyane.ecommerce.dto.OrderMapper;
+import com.salehhafyane.ecommerce.dto.PurchaseRequest;
 import com.salehhafyane.ecommerce.dto.PurchaseResponse;
 import com.salehhafyane.ecommerce.entity.Address;
 import com.salehhafyane.ecommerce.entity.Order;
@@ -29,20 +31,22 @@ public class CheckoutServiceImp implements CheckoutService {
 
     @Override
     @Transactional
-    public PurchaseResponse makeOrder(Purchase purchase, User user) {
-        // Create a new order from the purchase
-        Order order = purchase.getOrder();
+    public PurchaseResponse makeOrder(PurchaseRequest purchase, User user) {
+        // Build a new order from the purchase request (tracking number and status are server-generated)
+        Order order = OrderMapper.toEntity(purchase.getOrder());
 
         // Generate a unique order tracking number
         String orderTrackingNumber = generateOrderTrackingNumber();
         order.setOrderTrackingNumber(orderTrackingNumber);
 
         // Add order items to the order
-        Set<OrderItem> orderItems = purchase.getOrderItems();
-        orderItems.forEach(order::add);
+        for (OrderItemDTO itemDTO : purchase.getOrderItems()) {
+            OrderItem item = OrderMapper.toEntity(itemDTO);
+            order.add(item);
+        }
 
         // Set the address for the order
-        Address savedAddress = addressRepository.save(purchase.getAddress()); // Persist the address first
+        Address savedAddress = addressRepository.save(OrderMapper.toEntity(purchase.getAddress())); // Persist the address first
         order.setAddress(savedAddress);
 
         // Assign the user to the order

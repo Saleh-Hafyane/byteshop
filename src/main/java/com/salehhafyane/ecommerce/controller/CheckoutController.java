@@ -1,7 +1,8 @@
 package com.salehhafyane.ecommerce.controller;
 
-import com.salehhafyane.ecommerce.dto.Purchase;
+import com.salehhafyane.ecommerce.dto.PurchaseRequest;
 import com.salehhafyane.ecommerce.dto.PurchaseResponse;
+import jakarta.validation.Valid;
 import com.salehhafyane.ecommerce.entity.User;
 import com.salehhafyane.ecommerce.service.CheckoutService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class CheckoutController {
     }
 
     @PostMapping("/purchase")
-    public PurchaseResponse makeOrder(@RequestBody Purchase purchase, @AuthenticationPrincipal User user) {
+    public PurchaseResponse makeOrder(@Valid @RequestBody PurchaseRequest purchase, @AuthenticationPrincipal User user) {
         return checkoutService.makeOrder(purchase, user);
     }
 }
