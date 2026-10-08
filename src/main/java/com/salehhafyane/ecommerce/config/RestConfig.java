@@ -35,17 +35,26 @@ public class RestConfig implements RepositoryRestConfigurer {
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
         RepositoryRestConfigurer.super.configureRepositoryRestConfiguration(config, cors);
-        //disable http methods : put, post, delete.
+        //disable http methods : put, post, delete, patch.
         disableHttpMethods(Product.class,config);
         disableHttpMethods(ProductCategory.class,config);
         disableHttpMethods(City.class,config);
         // Expose entity IDs in REST responses
         exposeIds(config);
+        // Global CORS for Spring Data REST endpoints. Web MVC CORS configuration
+        // (CorsConfig) does NOT apply to SDR, and @CrossOrigin on repositories was
+        // removed, so reads must be declared here. Writes are disabled above, so
+        // only read methods are permitted cross-origin.
+        cors.addMapping("/**")
+                .allowedOriginPatterns("*")
+                .allowedMethods("GET", "HEAD", "OPTIONS")
+                .allowedHeaders("*")
+                .maxAge(3600);
     }
-    // Disables the specified HTTP methods (PUT, POST, DELETE) for a given entity type.
+    // Disables the specified HTTP methods (PUT, POST, DELETE, PATCH) for a given entity type.
     public void disableHttpMethods(Class entityClass,RepositoryRestConfiguration config){
         // HTTP methods to disable
-        HttpMethod[] unsupportedMethods = {HttpMethod.PUT,HttpMethod.POST,HttpMethod.DELETE};
+        HttpMethod[] unsupportedMethods = {HttpMethod.PUT,HttpMethod.POST,HttpMethod.DELETE,HttpMethod.PATCH};
         // Disable the specified methods for both item and collection resources
         config.getExposureConfiguration().forDomainType(entityClass).withItemExposure((metadata, httpMethods)->httpMethods.disable(unsupportedMethods)).withCollectionExposure((metadata, httpMethods) -> httpMethods.disable(unsupportedMethods));
 
