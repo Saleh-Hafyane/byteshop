@@ -41,7 +41,7 @@ export class CheckoutComponent implements OnInit {
     this.checkoutFormGroup = new FormGroup({
       address: new FormGroup({
         city: new FormControl('', [Validators.required]),
-        address: new FormControl('', [
+        fullAddress: new FormControl('', [
           Validators.required,
           Validators.minLength(2),
           CustomValidators.notOnlySpaces,
@@ -87,8 +87,8 @@ export class CheckoutComponent implements OnInit {
   get city() {
     return this.checkoutFormGroup.get('address.city');
   }
-  get address() {
-    return this.checkoutFormGroup.get('address.address');
+  get fullAddress() {
+    return this.checkoutFormGroup.get('address.fullAddress');
   }
   get cardType() {
     return this.checkoutFormGroup.get('creditCard.cardType');
@@ -121,10 +121,9 @@ export class CheckoutComponent implements OnInit {
       (tempCartItem) => new OrderItem(tempCartItem)
     );
 
-    // populate address
+    // populate address: the controls already hold the exact DTO keys
+    // (city is the selected city-name string, fullAddress the street text)
     let address = this.checkoutFormGroup.controls['address'].value;
-    const city: City = JSON.parse(JSON.stringify(address.city));
-    address.city = city.cityName;
 
     // set up purchase
     let purchase = new Purchase(address, order, orderItems);

@@ -33,12 +33,12 @@
             <div class="col-md-2"><span>Full Address</span></div>
             <div class="col-md-9">
               <div class="input-space">
-                <input formControlName="address" type="text">
-                <div *ngIf="address?.invalid && (address?.dirty||address?.touched)" class="alert alert-danger mt-1">
-                  <div *ngIf="address?.hasError('required')||address?.hasError('notOnlySpaces')">
+                <input formControlName="fullAddress" type="text">
+                <div *ngIf="fullAddress?.invalid && (fullAddress?.dirty||fullAddress?.touched)" class="alert alert-danger mt-1">
+                  <div *ngIf="fullAddress?.hasError('required')||fullAddress?.hasError('notOnlySpaces')">
                     Address is Required.
                   </div>
-                  <div *ngIf="address?.hasError('minlength')">
+                  <div *ngIf="fullAddress?.hasError('minlength')">
                     Address is too short.
                   </div>
 
