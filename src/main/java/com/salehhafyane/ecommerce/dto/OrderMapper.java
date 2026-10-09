@@ -3,6 +3,7 @@ package com.salehhafyane.ecommerce.dto;
 import com.salehhafyane.ecommerce.entity.Address;
 import com.salehhafyane.ecommerce.entity.Order;
 import com.salehhafyane.ecommerce.entity.OrderItem;
+import com.salehhafyane.ecommerce.entity.OrderStatus;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
@@ -25,7 +26,7 @@ public final class OrderMapper {
         return Order.builder()
                 .totalQuantity(dto.getTotalQuantity())
                 .totalPrice(dto.getTotalPrice())
-                .status("PENDING")
+                .status(OrderStatus.PENDING)
                 .build();
     }
 

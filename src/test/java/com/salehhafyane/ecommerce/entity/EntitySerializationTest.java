@@ -35,7 +35,7 @@ class EntitySerializationTest {
         return Order.builder()
                 .id(10L)
                 .orderTrackingNumber("8f14e45f-ceea-467f-a1d6-1f6ef4b7f8f2")
-                .status("PENDING")
+                .status(OrderStatus.PENDING)
                 .totalPrice(new BigDecimal("199.98"))
                 .totalQuantity(2)
                 .build();

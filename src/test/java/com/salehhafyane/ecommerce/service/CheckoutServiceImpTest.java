@@ -106,6 +106,6 @@ class CheckoutServiceImpTest {
         assertEquals(1, capturedOrder.getOrderItems().size()); // Verify the number of order items
         assertEquals(new BigDecimal("199.98"), capturedOrder.getTotalPrice());
         assertEquals(Integer.valueOf(2), capturedOrder.getTotalQuantity());
-        assertEquals("PENDING", capturedOrder.getStatus()); // Status is server-generated
+        assertEquals(OrderStatus.PENDING, capturedOrder.getStatus()); // Status is server-generated
     }
 }

@@ -35,7 +35,8 @@ private Long id;
     private String orderTrackingNumber;
 
     @Column(name = "status" )
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @Column(name = "total_price", nullable = false)
     private BigDecimal totalPrice;
