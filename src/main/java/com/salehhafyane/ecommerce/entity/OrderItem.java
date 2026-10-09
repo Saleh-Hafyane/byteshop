@@ -24,6 +24,9 @@ public class OrderItem {
     private int quantity;
     @Column(name = "product_id")
     private Long productId;
+    /** Snapshot of the product name at purchase time; never updated afterwards. */
+    @Column(name = "product_name")
+    private String productName;
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "order_id")

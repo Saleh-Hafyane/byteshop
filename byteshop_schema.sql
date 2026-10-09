@@ -103,6 +103,7 @@ CREATE TABLE `order_item` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `image_url` varchar(255) DEFAULT NULL,
   `product_id` bigint DEFAULT NULL,
+  `product_name` varchar(255) DEFAULT NULL,
   `quantity` int DEFAULT NULL,
   `unit_price` decimal(38,2) DEFAULT NULL,
   `order_id` bigint DEFAULT NULL,

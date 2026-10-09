@@ -26,4 +26,11 @@ public class OrderItemDTO {
 
     @NotNull(message = "Product id is required")
     private Long productId;
+
+    /**
+     * Response-side only: populated server-side from the product catalog at
+     * purchase time. Not copied by {@code OrderMapper.toEntity} and therefore
+     * cannot be spoofed by the client.
+     */
+    private String productName;
 }
