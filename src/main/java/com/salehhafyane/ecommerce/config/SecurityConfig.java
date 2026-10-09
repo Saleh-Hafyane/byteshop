@@ -39,6 +39,8 @@ public class SecurityConfig {
                     auth.requestMatchers("/api/v1/auth/**").permitAll() // Auth endpoints are public.
                             .requestMatchers("/error").permitAll()      // Allow Spring's error dispatch (needed for GlobalExceptionHandler).
                             .requestMatchers("/api/checkout/**").hasRole("USER") // Protect checkout endpoints.
+                            .requestMatchers("/api/user/**").hasRole("USER")     // Protect user order history endpoints.
+                            .requestMatchers("/api/orders/**").hasAnyRole("USER", "ADMIN") // Order details: owner or admin (ownership enforced in service).
                             .requestMatchers("/api/admin/**").hasRole("ADMIN")   // Protect admin endpoints.
                             .anyRequest().permitAll();
                 })

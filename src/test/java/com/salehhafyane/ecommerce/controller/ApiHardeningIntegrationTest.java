@@ -89,8 +89,21 @@ class ApiHardeningIntegrationTest {
     @Test
     void sensitiveRepositoriesAreNotExposed() throws Exception {
         mockMvc.perform(get("/api/users")).andExpect(status().isNotFound());
-        mockMvc.perform(get("/api/orders")).andExpect(status().isNotFound());
+        // /api/orders is behind authentication (chapter 7): anonymous callers
+        // are rejected before any exposure question arises ...
+        mockMvc.perform(get("/api/orders")).andExpect(status().isUnauthorized());
         mockMvc.perform(get("/api/addresses")).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void sensitiveRepositoriesStayHiddenBehindAuthentication() throws Exception {
+        String token = registerUser();
+
+        // ... and an authenticated user still finds no SDR collection there
+        // (proves the repository is unexported, not merely auth-gated).
+        mockMvc.perform(get("/api/orders")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isNotFound());
     }
 
     @Test
