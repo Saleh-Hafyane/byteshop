@@ -8,12 +8,15 @@ import {LoginComponent} from "./components/login/login.component";
 import {RegisterComponent} from "./components/register/register.component";
 import { AddProductComponent } from './components/add-product/add-product.component';
 import {ManageCategoriesComponent} from "./components/manage-categories/manage-categories.component";
+import {ManageOrdersComponent} from "./components/manage-orders/manage-orders.component";
+import {adminGuard} from "./admin.guard";
 
 
 export const routes: Routes = [
   {path:'admin/products/add',component:AddProductComponent},
   {path:'admin/products/update/:id',component:AddProductComponent},
   {path:'admin/categories',component:ManageCategoriesComponent},
+  {path:'admin/orders',component:ManageOrdersComponent,canActivate:[adminGuard]},
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
   {path:'checkout',component:CheckoutComponent,canActivate:[authGuard]},

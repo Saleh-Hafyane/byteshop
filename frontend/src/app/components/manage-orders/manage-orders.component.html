@@ -1,0 +1,52 @@
+<div class="main-content page-m mt-4">
+  <div class="section-content section-content-p30">
+    <div class="container-fluid">
+      <h4 class="mb-3">Manage Orders</h4>
+
+      <div *ngIf="isLoading" class="alert alert-info">Loading orders...</div>
+      <div *ngIf="!isLoading && loadError" class="alert alert-danger">
+        {{ loadError }}
+        <button (click)="getOrders()" class="btn btn-secondary btn-sm ms-2">Retry</button>
+      </div>
+      <div *ngIf="!isLoading && !loadError && orders.length === 0" class="alert alert-info">
+        No orders yet.
+      </div>
+
+      <table *ngIf="!isLoading && !loadError && orders.length > 0" class="table table-bordered cart-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tracking Number</th>
+            <th>Customer</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Change Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of orders">
+            <td>{{ order.id }}</td>
+            <td class="tracking-number">{{ order.orderTrackingNumber }}</td>
+            <td>{{ order.customerUsername }}</td>
+            <td>{{ order.totalQuantity }}</td>
+            <td>{{ order.totalPrice | number:'1.2-2' }}</td>
+            <td>{{ order.dateCreated | date:'short' }}</td>
+            <td>
+              <span class="badge {{ badgeClass(order.status) }}">{{ order.status }}</span>
+            </td>
+            <td>
+              <select [(ngModel)]="order.status"
+                      (ngModelChange)="changeStatus(order, $event)"
+                      [disabled]="isUpdating(order)"
+                      class="form-select form-select-sm status-select">
+                <option *ngFor="let s of statuses" [ngValue]="s">{{ s }}</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
