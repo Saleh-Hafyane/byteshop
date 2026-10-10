@@ -1,0 +1,58 @@
+<div class="main-content page-m mt-4">
+  <div class="section-content section-content-p30">
+    <div class="container-fluid">
+      <h4 class="mb-3">Order Details</h4>
+
+      <div *ngIf="isLoading" class="alert alert-info">Loading order details...</div>
+      <div *ngIf="!isLoading && loadError" class="alert alert-danger">
+        {{ loadError }}
+        <a routerLink="/my-orders" class="ms-2">Back to My Orders</a>
+      </div>
+
+      <div *ngIf="!isLoading && !loadError && order">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div><strong>Tracking Number:</strong> <span class="tracking-number">{{ order.orderTrackingNumber }}</span></div>
+            <div><strong>Date:</strong> {{ order.dateCreated | date:'medium' }}</div>
+            <div><strong>Status:</strong> <span class="badge {{ badgeClass(order.status) }}">{{ order.status }}</span></div>
+            <div><strong>Total Items:</strong> {{ order.totalQuantity }}</div>
+            <div><strong>Total Price:</strong> {{ order.totalPrice | number:'1.2-2' }}</div>
+          </div>
+        </div>
+
+        <h5 class="mb-2">Items</h5>
+        <table class="table table-bordered cart-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Unit Price</th>
+              <th>Line Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of order.orderItems">
+              <td>
+                <img *ngIf="item.imageUrl" [ngSrc]="item.imageUrl" width="50" height="50" alt="product image" class="me-2 item-thumb" />
+                {{ itemName(item.productId, item.productName) }}
+              </td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.unitPrice | number:'1.2-2' }}</td>
+              <td>{{ (item.unitPrice * item.quantity) | number:'1.2-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h5 class="mb-2 mt-3">Shipping Address</h5>
+        <div *ngIf="order.address" class="card">
+          <div class="card-body">
+            <div><strong>City:</strong> {{ order.address.city }}</div>
+            <div><strong>Address:</strong> {{ order.address.fullAddress }}</div>
+          </div>
+        </div>
+
+        <a routerLink="/my-orders" class="btn btn-secondary btn-sm mt-3">Back to My Orders</a>
+      </div>
+    </div>
+  </div>
+</div>

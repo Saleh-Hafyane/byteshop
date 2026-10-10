@@ -16,6 +16,11 @@
       <h4 class="mb-0 fst-italic">Welcome {{ getUser() }}</h4>
     </div>
     <div class="mx-2">
+      <a routerLink="/my-orders" class="btn btn-outline-light rounded-pill">
+        My Orders
+      </a>
+    </div>
+    <div class="mx-2">
       <a (click)="logout()" class="btn btn-danger fw-bold rounded-pill py-2 px-3 fst-italic">
         Logout
       </a>
