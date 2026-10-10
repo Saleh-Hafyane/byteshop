@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -222,5 +223,81 @@ class OrderWorkflowIntegrationTest {
         mockMvc.perform(get("/api/admin/orders")
                         .header("Authorization", "Bearer " + adminToken()))
                 .andExpect(status().isOk());
+    }
+
+    // ---------- status transitions (chapter 8) ----------
+
+    @Test
+    void adminCanTransitionStatus_EndToEnd() throws Exception {
+        String userToken = registerUser();
+        String admin = adminToken();
+        purchase(userToken, 1L);
+        String orderId = newestOrderId(userToken);
+
+        // Transition PENDING -> SHIPPED; response carries the updated summary
+        mockMvc.perform(patch("/api/admin/orders/" + orderId + "/status")
+                        .header("Authorization", "Bearer " + admin)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"status\":\"SHIPPED\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.status").value("SHIPPED"))
+                .andExpect(jsonPath("$.customerUsername").isString());
+
+        // Persistence proof through the real stack: details reflect the change
+        mockMvc.perform(get("/api/orders/" + orderId)
+                        .header("Authorization", "Bearer " + userToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("SHIPPED"));
+    }
+
+    @Test
+    void statusTransition_MissingOrderReturns404() throws Exception {
+        mockMvc.perform(patch("/api/admin/orders/999999/status")
+                        .header("Authorization", "Bearer " + adminToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"status\":\"CANCELLED\"}"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void statusTransition_RejectsBadPayloadsWith400() throws Exception {
+        String admin = adminToken();
+
+        // Unknown enum value fails at deserialization ...
+        mockMvc.perform(patch("/api/admin/orders/1/status")
+                        .header("Authorization", "Bearer " + admin)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"status\":\"FLY_TO_MARS\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Malformed request body"));
+
+        // ... and a missing status fails bean validation with field errors
+        mockMvc.perform(patch("/api/admin/orders/1/status")
+                        .header("Authorization", "Bearer " + admin)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors.status").value("Status is required"));
+    }
+
+    @Test
+    void statusTransition_RequiresAdminRole() throws Exception {
+        String userToken = registerUser();
+        purchase(userToken, 1L);
+        String orderId = newestOrderId(userToken);
+
+        // Anonymous: 401
+        mockMvc.perform(patch("/api/admin/orders/" + orderId + "/status")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"status\":\"SHIPPED\"}"))
+                .andExpect(status().isUnauthorized());
+
+        // Non-admin: 403
+        mockMvc.perform(patch("/api/admin/orders/" + orderId + "/status")
+                        .header("Authorization", "Bearer " + userToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"status\":\"SHIPPED\"}"))
+                .andExpect(status().isForbidden());
     }
 }

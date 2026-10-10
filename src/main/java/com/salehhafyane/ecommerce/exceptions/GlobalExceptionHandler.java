@@ -3,6 +3,7 @@ package com.salehhafyane.ecommerce.exceptions;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,6 +31,18 @@ public class GlobalExceptionHandler {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST.value(), "Validation Failed", LocalDateTime.now(), fieldErrors);
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
+    // Catches malformed JSON bodies (e.g. unknown enum values) -> 400 Bad Request
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiError> handleNotReadable(HttpMessageNotReadableException ex) {
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST.value(),
+                "Malformed request body",
+                LocalDateTime.now(),
+                null
+        );
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
     // Catches duplicate username/email errors -> 409 Conflict
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ApiError> handleUserAlreadyExists(UserAlreadyExistsException ex) {
