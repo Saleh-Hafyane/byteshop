@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForOf, NgIf, DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { OrderService } from '../../services/order.service';
 import { ORDER_STATUSES, ORDER_STATUS_BADGE, OrderStatus, OrderSummary } from '../../common/order-summary';
 
@@ -24,7 +26,7 @@ export class ManageOrdersComponent implements OnInit {
   loadError: string | null = null;
   updatingIds = new Set<number>();
 
-  constructor(private orderService: OrderService) {
+  constructor(private orderService: OrderService, private router: Router) {
   }
 
   ngOnInit() {
@@ -59,7 +61,8 @@ export class ManageOrdersComponent implements OnInit {
     if (newStatus === order.status || this.isUpdating(order)) {
       return;
     }
-    const previousStatus = order.status;
+    // Pessimistic update: the row keeps the old value until the server
+    // confirms, so a failed PATCH never flashes a phantom status.
     this.updatingIds.add(order.id);
     this.orderService.updateOrderStatus(order.id, newStatus).subscribe({
       next: (updated) => {
@@ -69,11 +72,16 @@ export class ManageOrdersComponent implements OnInit {
         }
         this.updatingIds.delete(order.id);
       },
-      error: (e) => {
+      error: (e: HttpErrorResponse) => {
         console.error('Error updating order status:', e);
-        order.status = previousStatus;
         this.updatingIds.delete(order.id);
-        alert('Failed to update order status. Please try again.');
+        if (e.status === 401) {
+          alert('Your session has expired. Please log in again.');
+          this.router.navigate(['/login']);
+        } else {
+          const detail = e.error?.message ?? 'Please try again.';
+          alert(`Failed to update order status: ${detail}`);
+        }
       }
     });
   }
