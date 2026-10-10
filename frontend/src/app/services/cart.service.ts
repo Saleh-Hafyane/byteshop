@@ -65,9 +65,10 @@ export class CartService {
       priceTotalValue += cartItem.quantity * cartItem.unitPrice;
     }
 
-    // Emit new totals to subscribers
+    // Emit new totals to subscribers (price rounded to cents: avoids
+    // floating-point artifacts like 249.97000000000003 in the UI)
     this.totalQuantity.next(quantityTotalValue);
-    this.totalPrice.next(priceTotalValue);
+    this.totalPrice.next(Math.round(priceTotalValue * 100) / 100);
   }
 
   /**

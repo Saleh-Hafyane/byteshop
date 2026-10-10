@@ -1,6 +1,7 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {Router, RouterLink} from "@angular/router";
 import {NgIf} from "@angular/common";
+import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle} from "@ng-bootstrap/ng-bootstrap";
 import {AuthService} from "../../services/auth.service";
 import {RegisterComponent} from "../register/register.component";
 import {authGuard} from "../../auth.guard";
@@ -11,7 +12,11 @@ import {Subscription} from "rxjs";
   standalone: true,
   imports: [
     RouterLink,
-    NgIf
+    NgIf,
+    NgbDropdown,
+    NgbDropdownToggle,
+    NgbDropdownMenu,
+    NgbDropdownItem
   ],
   templateUrl: './login-header.component.html',
   styleUrl: './login-header.component.css'
@@ -48,6 +53,10 @@ export class LoginHeaderComponent implements OnInit{
 
   isAuth(){
     return this.authService.isAuthenticated()
+  }
+
+  getRole(){
+    return this.authService.getRole()
   }
 
 

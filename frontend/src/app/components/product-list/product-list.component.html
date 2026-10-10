@@ -21,7 +21,7 @@
       <!-- Product Grid -->
       <div class="row">
         <div
-          *ngFor="let product of products"
+          *ngFor="let product of products; trackBy: trackByProductId"
           class="col-lg-4 col-md-6 col-xl-3 mb-4"
         >
           <div class="product-box card shadow-sm border-0 h-100 text-center">

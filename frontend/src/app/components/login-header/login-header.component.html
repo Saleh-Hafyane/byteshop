@@ -11,17 +11,27 @@
       </a>
     </div>
   </div>
-  <div *ngIf="authService.userSig() || authService.userSig() === undefined" class="d-flex justify-content-end align-items-center user-info">
-    <div class="mx-2 ">
-      <h4 class="mb-0 fst-italic">Welcome {{ getUser() }}</h4>
+  <div *ngIf="authService.userSig() || authService.userSig() === undefined" class="d-flex justify-content-end align-items-center header-links">
+    <div class="welcome-text">
+      <span class="fst-italic">Welcome {{ getUser() }}</span>
     </div>
-    <div class="mx-2">
-      <a routerLink="/my-orders" class="btn btn-outline-light rounded-pill">
+    <div *ngIf="getRole() !== 'ADMIN'">
+      <a routerLink="/my-orders" class="btn btn-ghost-light rounded-pill text-nowrap">
         My Orders
       </a>
     </div>
-    <div class="mx-2">
-      <a (click)="logout()" class="btn btn-danger fw-bold rounded-pill py-2 px-3 fst-italic">
+    <div *ngIf="getRole() === 'ADMIN'" ngbDropdown class="d-inline-block" container="body">
+      <button type="button" class="btn btn-admin-gold rounded-pill text-nowrap" ngbDropdownToggle>
+        Admin
+      </button>
+      <div ngbDropdownMenu>
+        <a ngbDropdownItem routerLink="/admin/orders">Orders</a>
+        <a ngbDropdownItem routerLink="/admin/products/add">Add Product</a>
+        <a ngbDropdownItem routerLink="/admin/categories">Categories</a>
+      </div>
+    </div>
+    <div>
+      <a (click)="logout()" class="btn btn-danger fw-bold rounded-pill px-3 fst-italic text-nowrap">
         Logout
       </a>
     </div>

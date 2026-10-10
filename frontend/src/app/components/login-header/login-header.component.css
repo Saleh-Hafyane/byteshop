@@ -9,12 +9,41 @@
   margin-bottom: 0;
 }
 
-.user-info {
+.header-links {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  row-gap: 0.5rem;
   padding: 5px;
-  border-radius: 8px;
-  background-color: #f8f1fc;
-  border: 1px solid #e2d6ed;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.header-links .welcome-text {
+  margin-right: auto;
+  white-space: nowrap;
+  color: #FFEDD8;
+  font-size: 18px;
+  font-weight: bold;
+}
+/* Ghost pill: cream outline on the purple header, fills on hover */
+.btn-ghost-light {
+  color: #FFEDD8;
+  border: 1px solid #FFEDD8;
+  background: transparent;
+}
+.btn-ghost-light:hover {
+  color: #4a154b;
+  background-color: #FFEDD8;
+  border-color: #FFEDD8;
+}
+/* Admin accent: solid gold, the single role color in the header */
+.btn-admin-gold {
+  color: #3a0e2e;
+  background-color: #f5b301;
+  border: 1px solid #f5b301;
+  font-weight: bold;
+}
+.btn-admin-gold:hover {
+  color: #3a0e2e;
+  background-color: #ffc61a;
+  border-color: #ffc61a;
 }
 .btn-primary{
   background-color: #891652;
@@ -24,16 +53,12 @@
   background-color: #91064e;
   border-color: #91064e;
 }
-.user-info h4 {
-  color: #6d238e; font-weight: bold
-}
-
-.user-info .btn-danger {
+.header-links .btn-danger {
   background-color: #dc3545;
   border-color: #dc3545;
 }
 
-.user-info .btn-danger:hover {
+.header-links .btn-danger:hover {
   background-color: #c82333;
   border-color: #bd2130;
 }

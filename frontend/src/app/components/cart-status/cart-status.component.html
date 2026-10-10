@@ -1,16 +1,10 @@
 <div *ngIf="getRole() == 'USER' || getRole() == undefined" class="cart-area">
   <a routerLink="/cart-detail">
     <div class="total">
-      {{ totalPrice }}
+      {{ totalPrice | number:'1.2-2' }}
       <span> {{ totalQuantity }}</span>
     </div>
     <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-  </a>
-</div>
-<!-- Admin: it show an add product button instead of the cart status -->
-<div *ngIf="getRole() == 'ADMIN'" class="admin-add-button">
-  <a routerLink="/admin/products/add" class="btn btn-primary">
-    <i class="fa fa-plus me-2"></i> Add Product
   </a>
 </div>
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../common/product';
 import { CurrencyPipe, NgForOf, NgIf, NgOptimizedImage } from '@angular/common';
@@ -7,6 +7,7 @@ import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { CartService } from '../../services/cart.service';
 import { CartItem } from '../../common/cart-item';
 import { AuthService } from '../../services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-product-list',
@@ -21,7 +22,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',
 })
-export class ProductListComponent implements OnInit {
+export class ProductListComponent implements OnInit, OnDestroy {
   products: Product[] = [];
   categoryId: number = -1; // id -1 means null
   prevCategoryId: number = 1;
@@ -33,6 +34,7 @@ export class ProductListComponent implements OnInit {
   totalElements: number = 0;
   sortOrder: string = '';
   role: String = '';
+  private availabilitySub: Subscription | null = null;
 
   constructor(
     private productService: ProductService,
@@ -46,6 +48,29 @@ export class ProductListComponent implements OnInit {
     this.route.paramMap.subscribe((value) => {
       this.productsList();
     });
+    // Update only the matching item in place: keeps object identities stable
+    // so Angular (with trackBy) leaves untouched cards' DOM alone.
+    this.availabilitySub = this.productService.availability$.subscribe((availabilityList) => {
+      if (!availabilityList || availabilityList.length === 0 || this.products.length === 0) {
+        return;
+      }
+      for (const product of this.products) {
+        const availabilityItem = availabilityList.find(
+          (item) => item.id === product.id
+        );
+        if (availabilityItem && product.unitsInStock !== availabilityItem.units) {
+          product.unitsInStock = availabilityItem.units;
+        }
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.availabilitySub?.unsubscribe();
+  }
+
+  trackByProductId(index: number, product: Product): string {
+    return product.id;
   }
 
   productsList() {
@@ -106,19 +131,6 @@ export class ProductListComponent implements OnInit {
       this.pageNumber = data.page.number + 1;
       this.pageSize = data.page.size;
       this.totalElements = data.page.totalElements;
-      this.productService.availability$.subscribe((availabilityList) => {
-        this.products = this.products.map((product) => {
-          const availabilityItem = availabilityList.find(
-            (item) => item.id === product.id
-          );
-
-          // If availability data exists, update unitsInStock
-          if (availabilityItem) {
-            return { ...product, unitsInStock: availabilityItem.units };
-          }
-          return product;
-        });
-      });
     };
   }
 
