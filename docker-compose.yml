@@ -1,18 +1,19 @@
 services:
-  mysql-db:
-    image: mysql:8.4
-    container_name: byteshop-db
+  postgres-db:
+    image: postgres:17
+    container_name: byteshop-postgres
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: byteshop
+      POSTGRES_DB: byteshop
+      POSTGRES_PASSWORD: postgres
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
       - ./byteshop_schema.sql:/docker-entrypoint-initdb.d/schema.sql
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      # -h 127.0.0.1 forces TCP so the initdb temp server (socket-only) never passes early.
+      test: [ "CMD-SHELL", "pg_isready -U postgres -h 127.0.0.1" ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -24,12 +25,12 @@ services:
     container_name: byteshop-backend
     restart: always
     depends_on:
-      mysql-db:
+      postgres-db:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/byteshop?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/byteshop
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
     ports:
       - "8080:8080"
@@ -49,4 +50,4 @@ services:
       - /app/node_modules
 
 volumes:
-  mysql_data:
+  postgres_data:

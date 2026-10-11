@@ -15,8 +15,8 @@ The project is built on a clean, layered architecture:
 - **Presentation Layer (Frontend):** Angular framework, structured components, and reactive services.
 - **Web Controller Layer:** Spring MVC REST Controllers (`AdminProductController`, `AuthController`, etc.) managing request-response mapping and REST endpoints.
 - **Service/Business Layer:** Clear separation of concerns with Services organized into Interfaces and Implementations (`IProductService` & `ProductServiceImpl`, `IProductCategoryService` & `ProductCategoryServiceImpl`).
-- **Data Access Layer (DAO):** Spring Data JPA repositories communicating with MySQL.
-- **Database:** MySQL relational database.
+- **Data Access Layer (DAO):** Spring Data JPA repositories communicating with PostgreSQL.
+- **Database:** PostgreSQL relational database.
 
 ---
 
@@ -24,22 +24,31 @@ The project is built on a clean, layered architecture:
 Before running the application, make sure you have the following installed:
 - **Java JDK 21** or higher
 - **Node.js** (v18+) and **npm**
-- **MySQL Server** (listening on `localhost:3306`)
+- **PostgreSQL Server** (listening on `localhost:5432`) — or **Docker**, to run it via `docker compose`
 - **Maven** (optional, wrapper script `mvn` is included)
 - **note** : i used WSL while developing this project
 
 ---
 
 ## 🔧 Database Setup
-1. Create a MySQL database named `byteshop`:
+### Option A — Docker Compose (recommended)
+```bash
+docker compose up -d postgres-db
+```
+This starts PostgreSQL 17 on `localhost:5432` (user `postgres`, password `postgres`, database `byteshop`) and automatically imports `byteshop_schema.sql` (schema + seed/catalog data) on first start of the empty volume.
+
+### Option B — Local PostgreSQL server
+1. Create a database named `byteshop`:
    ```sql
    CREATE DATABASE byteshop;
    ```
-2. Create a user `user` with password `password`, or modify the credentials in `src/main/resources/application.properties`.
-3. To import the schema tables, you can run:
+2. Make sure the credentials in `src/main/resources/application.properties` match your server (`jdbc:postgresql://localhost:5432/byteshop`, user `postgres`).
+3. To import the schema and seed data, you can run:
    ```bash
-   mysql -u user -ppassword byteshop < byteshop_schema.sql
+   psql -U postgres -d byteshop -f byteshop_schema.sql
    ```
+
+> **Note:** the backend test suite (`mvn test`) is hermetic — it uses an in-memory H2 database in PostgreSQL mode and needs neither Docker nor a local server.
 
 ---
 
