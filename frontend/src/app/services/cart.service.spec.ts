@@ -126,61 +126,46 @@ describe('CartService', () => {
     expect(price).toBe(249.97);
   });
 
-  // todo: fix decrease test case
-  /*
-    it('should decrease an item quantity and update totals', () => {
-      // Mock ProductService behavior
-      productServiceSpy.getProductStock.and.returnValue(10);
+  it('should decrease an item quantity and update totals', () => {
+    productServiceSpy.getProductStock.and.returnValue(10);
+    // fresh copy with pinned quantity: addToCart/decQuantity mutate the item
+    // object, and the shared mockCartItem is mutated by other tests
+    const item: CartItem = { ...mockCartItem, quantity: 1 };
 
-      // Add item to the cart twice
-      service.addToCart(mockCartItem);
-      service.addToCart(mockCartItem);
+    service.addToCart(item);
+    service.addToCart(item); // same reference already in cart -> quantity 2
 
-      // Decrease item quantity
-      service.decQuantity(mockCartItem);
+    service.decQuantity(item);
 
-      // Verify quantity and totals
-      expect(service.cartItems[0].quantity).toBe(1);
-
-      service.totalQuantity.subscribe((quantity) => {
-        expect(quantity).toBe(1);
-
-      });
-      service.totalPrice.subscribe((price) => {
-        expect(price).toBe(1000);
-
-      });
-
-    });
-  */
-  // todo: fix add new item test case
-  /*
-  it('should add a new item to the cart and update totals', () => {
-    // Mock ProductService behavior
-    productServiceSpy.getProductStock.and.returnValue(undefined);
-
-    // Add the item to the cart
-    service.addToCart(mockCartItem);
-
-    // Verify item was added successfully
+    expect(item.quantity).toBe(1);
     expect(service.cartItems.length).toBe(1);
-    expect(service.cartItems[0]).toEqual(mockCartItem);
 
-    // Verify totals are updated
-    service.totalQuantity.subscribe((quantity) => {
-      expect(quantity).toBe(1);
-
-    });
-
-    service.totalPrice.subscribe((price) => {
-      expect(price).toBe(1000);
-
-    });
-
-    // Verify stock update in ProductService
-    expect(productServiceSpy.updateProductStock).toHaveBeenCalledWith('1', 9);
-
-
+    let quantity!: number;
+    let price!: number;
+    service.totalQuantity.subscribe((q) => (quantity = q));
+    service.totalPrice.subscribe((p) => (price = p));
+    expect(quantity).toBe(1);
+    expect(price).toBe(1000);
   });
-*/
+
+  it('should add a brand-new item when the product has no stock entry yet', () => {
+    // no stock record yet: ProductService reports undefined for this product id
+    productServiceSpy.getProductStock.and.returnValue(undefined);
+    const item: CartItem = { ...mockCartItem, quantity: 1 };
+
+    service.addToCart(item);
+
+    expect(service.cartItems.length).toBe(1);
+    expect(service.cartItems[0]).toBe(item);
+
+    let quantity!: number;
+    let price!: number;
+    service.totalQuantity.subscribe((q) => (quantity = q));
+    service.totalPrice.subscribe((p) => (price = p));
+    expect(quantity).toBe(1);
+    expect(price).toBe(1000);
+
+    // the product's stock is seeded from the item's unitsInStock
+    expect(productServiceSpy.updateProductStock).toHaveBeenCalledWith('1', 9);
+  });
 });
