@@ -4,18 +4,21 @@ import com.salehhafyane.ecommerce.entity.Address;
 import com.salehhafyane.ecommerce.entity.Order;
 import com.salehhafyane.ecommerce.entity.OrderItem;
 import com.salehhafyane.ecommerce.entity.OrderStatus;
+import com.salehhafyane.ecommerce.entity.User;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
- * Mapping contract for the checkout DTOs: fields must transfer 1:1 and
+ * Mapping contract for the order DTOs: fields must transfer 1:1 and
  * server-owned order state (status, tracking number) must never come from
- * the client payload.
+ * the client payload. Covers both directions — checkout input ({@code toEntity})
+ * and read-model output ({@code toSummary} / {@code toDetails}).
  */
 class OrderMapperTest {
 
@@ -82,5 +85,149 @@ class OrderMapperTest {
     @Test
     void nullOrderItemDtoReturnsNull() {
         assertNull(OrderMapper.toEntity((OrderItemDTO) null));
+    }
+
+    // ---------- toSummary (list read-model) ----------
+
+    /** Fully populated order: every summary field must transfer 1:1. */
+    @Test
+    void toSummary_MapsFieldsAndFlattensCustomerToUsername() {
+        User customer = new User();
+        customer.setUsername("alice");
+        Date created = new Date(1_700_000_000_000L);
+        Order order = Order.builder()
+                .orderTrackingNumber("track-77")
+                .status(OrderStatus.SHIPPED)
+                .totalQuantity(3)
+                .totalPrice(new BigDecimal("299.97"))
+                .build();
+        order.setId(7L);
+        order.setDateCreated(created);
+        order.setUser(customer);
+
+        OrderSummaryDTO summary = OrderMapper.toSummary(order);
+
+        assertNotNull(summary);
+        assertEquals(7L, summary.getId());
+        assertEquals("track-77", summary.getOrderTrackingNumber());
+        assertEquals(OrderStatus.SHIPPED, summary.getStatus());
+        assertEquals(3, summary.getTotalQuantity());
+        assertEquals(new BigDecimal("299.97"), summary.getTotalPrice());
+        assertEquals(created, summary.getDateCreated());
+        assertEquals("alice", summary.getCustomerUsername());
+    }
+
+    /**
+     * Defensive contract: an order without a loaded user must still map to a
+     * summary (username null) instead of throwing — the mapper is documented
+     * to run inside a transaction, but must never NPE the whole list view.
+     */
+    @Test
+    void toSummary_NullUserYieldsNullUsername() {
+        Order order = Order.builder()
+                .orderTrackingNumber("track-78")
+                .status(OrderStatus.PENDING)
+                .totalQuantity(1)
+                .totalPrice(new BigDecimal("9.99"))
+                .build();
+        order.setId(8L);
+
+        OrderSummaryDTO summary = OrderMapper.toSummary(order);
+
+        assertNotNull(summary);
+        assertNull(summary.getCustomerUsername());
+    }
+
+    @Test
+    void toSummary_NullOrderReturnsNull() {
+        assertNull(OrderMapper.toSummary(null));
+    }
+
+    // ---------- toDetails (full read-model) ----------
+
+    /** Address, items and server-side product name snapshots must all arrive. */
+    @Test
+    void toDetails_MapsAddressAndItemsWithProductNameSnapshot() {
+        User customer = new User();
+        customer.setUsername("bob");
+        Address address = new Address();
+        address.setCity("Casablanca");
+        address.setFullAddress("Boulevard Zero");
+        OrderItem item = new OrderItem();
+        item.setImageUrl("https://example.com/x.png");
+        item.setUnitPrice(new BigDecimal("49.99"));
+        item.setQuantity(5);
+        item.setProductId(9L);
+        item.setProductName("ThinkPad");
+        Order order = Order.builder()
+                .orderTrackingNumber("track-90")
+                .status(OrderStatus.DELIVERED)
+                .totalQuantity(5)
+                .totalPrice(new BigDecimal("249.95"))
+                .build();
+        order.setId(9L);
+        order.setUser(customer);
+        order.setAddress(address);
+        order.add(item);
+
+        OrderDetailsDTO details = OrderMapper.toDetails(order);
+
+        assertNotNull(details);
+        assertEquals(9L, details.getId());
+        assertEquals("track-90", details.getOrderTrackingNumber());
+        assertEquals(OrderStatus.DELIVERED, details.getStatus());
+        assertEquals("bob", details.getCustomerUsername());
+        assertNotNull(details.getAddress());
+        assertEquals("Casablanca", details.getAddress().getCity());
+        assertEquals("Boulevard Zero", details.getAddress().getFullAddress());
+        assertEquals(1, details.getOrderItems().size());
+        OrderItemDTO mappedItem = details.getOrderItems().get(0);
+        assertEquals("ThinkPad", mappedItem.getProductName(), "Product name snapshot must reach the details view");
+        assertEquals("https://example.com/x.png", mappedItem.getImageUrl());
+        assertEquals(new BigDecimal("49.99"), mappedItem.getUnitPrice());
+        assertEquals(5, mappedItem.getQuantity());
+        assertEquals(9L, mappedItem.getProductId());
+    }
+
+    /** Order without an address must map with a null address, not throw. */
+    @Test
+    void toDetails_NullAddressLeavesAddressNull() {
+        Order order = Order.builder()
+                .orderTrackingNumber("track-91")
+                .status(OrderStatus.PENDING)
+                .totalQuantity(1)
+                .totalPrice(new BigDecimal("1.00"))
+                .build();
+        order.setId(10L);
+
+        OrderDetailsDTO details = OrderMapper.toDetails(order);
+
+        assertNotNull(details);
+        assertNull(details.getAddress());
+    }
+
+    /**
+     * Builder-created orders carry no item collection until items are added;
+     * the mapper must leave the field null instead of NPE-ing on stream().
+     */
+    @Test
+    void toDetails_NullOrderItemsYieldNullList() {
+        Order order = Order.builder()
+                .orderTrackingNumber("track-92")
+                .status(OrderStatus.PENDING)
+                .totalQuantity(1)
+                .totalPrice(new BigDecimal("1.00"))
+                .build();
+        order.setId(11L);
+
+        OrderDetailsDTO details = OrderMapper.toDetails(order);
+
+        assertNotNull(details);
+        assertNull(details.getOrderItems());
+    }
+
+    @Test
+    void toDetails_NullOrderReturnsNull() {
+        assertNull(OrderMapper.toDetails(null));
     }
 }
