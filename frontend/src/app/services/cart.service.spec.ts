@@ -111,6 +111,21 @@ describe('CartService', () => {
     expect(service.cartItems.length).toBe(0);
 
   });
+  it('should round the cart total to exact cents (no floating-point artifacts)', () => {
+    // Raw float sum of these prices is 249.96999999999997;
+    // the emitted total must be the clean 249.97 (regression: "249.97000000000003" in UI)
+    productServiceSpy.getProductStock.and.returnValue(10);
+
+    service.addToCart({ id: 'a', name: 'Item A', imageUrl: '', unitPrice: 83.32, quantity: 1, unitsInStock: 10 });
+    service.addToCart({ id: 'b', name: 'Item B', imageUrl: '', unitPrice: 83.33, quantity: 1, unitsInStock: 10 });
+    service.addToCart({ id: 'c', name: 'Item C', imageUrl: '', unitPrice: 83.32, quantity: 1, unitsInStock: 10 });
+
+    let price!: number;
+    service.totalPrice.subscribe((p) => (price = p));
+
+    expect(price).toBe(249.97);
+  });
+
   // todo: fix decrease test case
   /*
     it('should decrease an item quantity and update totals', () => {

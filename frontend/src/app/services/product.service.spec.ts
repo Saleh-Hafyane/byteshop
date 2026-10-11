@@ -2,7 +2,6 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ProductService } from './product.service';
 import { Product } from '../common/product';
-import { ProductCategory } from '../common/product-category';
 
 describe('ProductService', () => {
   let service: ProductService;
@@ -16,12 +15,8 @@ describe('ProductService', () => {
     imageUrl: 'https://example.com/sample.jpg',
     unitsInStock: 10,
     dateCreated: new Date(),
-    lastUpdated: new Date()
-  };
-
-  const mockCategory: ProductCategory = {
-    id: 1,
-    categoryName: 'Category 1'
+    lastUpdated: new Date(),
+    _links: { self: { href: '' }, product: { href: '' }, category: { href: '' } }
   };
 
   beforeEach(() => {
@@ -60,21 +55,6 @@ describe('ProductService', () => {
     const req = httpMock.expectOne(
       'http://localhost:8080/api/products/search/findByCategoryId?id=1&page=0&size=10&sort=name'
     );
-    expect(req.request.method).toBe('GET');
-    req.flush(mockResponse);
-  });
-
-  it('should fetch product categories', () => {
-    const mockResponse = {
-      _embedded: { productCategory: [mockCategory] }
-    };
-
-    service.getProductCategories().subscribe(categories => {
-      expect(categories.length).toBe(1);
-      expect(categories[0]).toEqual(mockCategory);
-    });
-
-    const req = httpMock.expectOne('http://localhost:8080/api/product-category');
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });

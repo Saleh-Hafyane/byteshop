@@ -29,7 +29,7 @@ describe('AuthService', () => {
   describe('register', () => {
     it('should send a POST request to register a new user', () => {
       const mockRequest = { username: 'testUser', password: 'password' };
-      const mockResponse: User = { username: 'testUser', token: 'token' };
+      const mockResponse: User = { username: 'testUser', token: 'token', role: 'USER' };
 
       // Call the register method and assert the response
       service.register({ getRawValue: () => mockRequest }).subscribe((response) => {
@@ -46,7 +46,7 @@ describe('AuthService', () => {
   describe('login', () => {
     it('should send a POST request to authenticate a user', () => {
       const mockRequest = { username: 'testUser', password: 'password' }; // Mock login payload
-      const mockResponse: User = { username: 'testUser', token: 'token' }; // Mock response
+      const mockResponse: User = { username: 'testUser', token: 'token', role: 'USER' }; // Mock response
 
       service.login({ getRawValue: () => mockRequest }).subscribe((response) => {
         expect(response).toEqual(mockResponse);
