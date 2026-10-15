@@ -1,8 +1,6 @@
 # ByteShop
 
-My full-stack e-commerce project — Spring Boot on the back, Angular on the front, Postgres holding it all together. I built it to learn how a real store actually fits together: auth, catalog, cart, checkout, admin, the whole flow.
-
-The shop comes with 25 electronics products already loaded (laptops, MacBooks, keyboards, mice) so it feels like a store from the first click, not an empty demo.
+A full-stack e-commerce project — Spring Boot on the back, Angular on the front, Postgres holding it all together. I built it to learn how a real store actually fits together: auth, catalog, cart, checkout, admin, the whole flow.
 
 ## What you can do with it
 
@@ -36,7 +34,7 @@ Database first — either let compose create it:
 docker compose up -d postgres-db
 ```
 
-which imports `byteshop_schema.sql` (schema + the 25 products) on first start. Or if you already have a `byteshop` database and don't want to wipe it:
+which imports `byteshop_schema.sql` (schema + the seed products) on first start. Or if you already have a `byteshop` database and don't want to wipe it:
 
 ```bash
 psql -U postgres -d byteshop -f seed_catalog.sql
