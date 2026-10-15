@@ -554,21 +554,51 @@ INSERT INTO public.orders (id, date_created, last_updated, order_tracking_number
 -- Data for Name: product; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.product (id, date_created, description, image_url, last_updated, name, unit_price, units_in_stock, category_id) VALUES (1, '2026-01-01 00:00:00', 'Latest smartphone with advanced features', 'https://via.placeholder.com/150', '2026-01-01 00:00:00', 'Smartphone X1', 699.99, 50, 1);
-INSERT INTO public.product (id, date_created, description, image_url, last_updated, name, unit_price, units_in_stock, category_id) VALUES (2, '2026-01-01 00:00:00', 'High-quality wireless headphones', 'https://via.placeholder.com/150', '2026-01-01 00:00:00', 'Wireless Headphones', 149.99, 100, 1);
-INSERT INTO public.product (id, date_created, description, image_url, last_updated, name, unit_price, units_in_stock, category_id) VALUES (3, '2026-01-01 00:00:00', 'Comprehensive guide to Spring Boot', 'https://via.placeholder.com/150', '2026-01-01 00:00:00', 'Spring Boot in Action', 49.99, 75, 2);
-INSERT INTO public.product (id, date_created, description, image_url, last_updated, name, unit_price, units_in_stock, category_id) VALUES (4, '2026-01-01 00:00:00', 'Angular development handbook', 'https://via.placeholder.com/150', '2026-01-01 00:00:00', 'Angular Masterclass', 59.99, 60, 2);
-INSERT INTO public.product (id, date_created, description, image_url, last_updated, name, unit_price, units_in_stock, category_id) VALUES (5, '2026-01-01 00:00:00', 'Comfortable cotton t-shirt', 'https://via.placeholder.com/150', '2026-01-01 00:00:00', 'Classic T-Shirt', 29.99, 200, 3);
-INSERT INTO public.product (id, date_created, description, image_url, last_updated, name, unit_price, units_in_stock, category_id) VALUES (6, '2026-01-01 00:00:00', 'Durable denim jeans', 'https://via.placeholder.com/150', '2026-01-01 00:00:00', 'Denim Jeans', 79.99, 150, 3);
+-- Demo catalog: 25 real electronics products (ids 101-150, selective), 4 categories (ids 10-13)
 
 
 --
 -- Data for Name: product_category; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.product_category (id, category_name) VALUES (1, 'Electronics');
-INSERT INTO public.product_category (id, category_name) VALUES (2, 'Books');
-INSERT INTO public.product_category (id, category_name) VALUES (3, 'Clothing');
+INSERT INTO public.product_category (id, category_name) VALUES (10, 'Laptops');
+INSERT INTO public.product_category (id, category_name) VALUES (11, 'MacBooks');
+INSERT INTO public.product_category (id, category_name) VALUES (12, 'Keyboards');
+INSERT INTO public.product_category (id, category_name) VALUES (13, 'Mice');
+
+--
+-- Demo catalog: 25 real electronics products (ids 101-150, selective)
+--
+
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (101, NOW(), 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=800&q=80', NOW(), 'Lenovo ThinkPad E14 Gen 5', 7499.00, 34, '14in WUXGA IPS, Ryzen 5 7530U, 16GB DDR4, 512GB SSD, backlit keyboard, Windows 11 Pro.', 10);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (102, NOW(), 'https://images.unsplash.com/photo-1589561084283-930aa7b1ce50?auto=format&fit=crop&w=800&q=80', NOW(), 'HP Pavilion 15-eg2000', 6899.00, 28, '15.6in FHD IPS, Core i5-1335U, 16GB RAM, 512GB SSD, B and O audio, Windows 11.', 10);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (104, NOW(), 'https://images.unsplash.com/photo-1544731612-de7f96afe55f?auto=format&fit=crop&w=800&q=80', NOW(), 'ASUS VivoBook 15 OLED M1505', 7799.00, 25, '15.6in OLED FHD, Ryzen 7 7730U, 16GB RAM, 512GB SSD, Harman Kardon, Windows 11.', 10);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (105, NOW(), 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=800&q=80', NOW(), 'Acer Aspire Lite AL15-52', 4299.00, 46, '15.6in FHD, Core i3-N305, 8GB RAM, 512GB SSD, slim metal lid, Windows 11.', 10);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (109, NOW(), 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=800&q=80', NOW(), 'ASUS TUF Gaming F15 FX507', 9499.00, 16, '15.6in FHD 144Hz, i5-11400H, RTX 2050 4GB, 16GB RAM, 512GB SSD, RGB keys.', 10);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (111, NOW(), 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=800&q=80', NOW(), 'Lenovo LOQ 15 Gaming', 10999.00, 12, '15.6in FHD 144Hz G-Sync, Ryzen 5 7640HS, RTX 4050 6GB, 16GB DDR5, 512GB SSD.', 10);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (114, NOW(), 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=800&q=80', NOW(), 'ASUS Zenbook 14 OLED UX3402', 11999.00, 9, '14.5in 2.8K OLED 90Hz, i7-1260P, 16GB LPDDR5, 1TB SSD, 1.39kg Evo-certified.', 10);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (115, NOW(), 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80', NOW(), 'Apple MacBook Air 13 M1 2020', 9499.00, 20, '13.3in Retina, Apple M1, 8GB unified memory, 256GB SSD, fanless, Touch ID.', 11);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (117, NOW(), 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=800&q=80', NOW(), 'Apple MacBook Air 13 M3 2024', 13499.00, 15, '13.6in Liquid Retina 500 nits, Apple M3, 8GB RAM, 512GB SSD, 18h battery.', 11);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (119, NOW(), 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=800&q=80', NOW(), 'Apple MacBook Pro 14 M3 2023', 19999.00, 8, '14.2in Liquid Retina XDR 1000 nits, Apple M3, 18GB RAM, 512GB SSD, HDMI plus SDXC.', 11);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (121, NOW(), 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=800&q=80', NOW(), 'Apple MacBook Pro 16 M3 Max', 32999.00, 4, '16.2in XDR, M3 Max 14-core, 36GB RAM, 1TB SSD, best for 4K video and code builds.', 11);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (123, NOW(), 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=800&q=80', NOW(), 'Logitech K120 Wired Keyboard', 149.00, 120, 'Full-size layout, spill-resistant, USB plug-and-play. Office classic.', 12);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (124, NOW(), 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=800&q=80', NOW(), 'Logitech MX Keys S', 1199.00, 32, 'Low-profile backlit keys, Smart Illumination, multi-device Bluetooth plus Logi Bolt, USB-C.', 12);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (126, NOW(), 'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?auto=format&fit=crop&w=800&q=80', NOW(), 'Keychron K2 V2 Hot-Swappable', 949.00, 27, '75 percent wireless mechanical, Gateron Red switches, RGB, Mac-Windows keycaps, 4000mAh.', 12);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (127, NOW(), 'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?auto=format&fit=crop&w=800&q=80', NOW(), 'Royal Kludge RK61 RGB', 599.00, 44, '60 percent compact wireless mechanical, blue switches, RGB PBT keycaps, Bluetooth plus wired.', 12);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (129, NOW(), 'https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=800&q=80', NOW(), 'Razer BlackWidow V3', 1399.00, 16, 'Full-size mechanical with Razer Green clicky switches, Chroma RGB, wrist rest.', 12);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (131, NOW(), 'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?auto=format&fit=crop&w=800&q=80', NOW(), 'Redragon K552 Kumara', 399.00, 58, 'TKL mechanical with Outemu Blue switches, red LED backlight, metal base. Budget king.', 12);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (136, NOW(), 'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?auto=format&fit=crop&w=800&q=80', NOW(), 'Aula F75 Wireless Gasket', 699.00, 29, '75 percent gasket-mount mechanical, pre-lubed linear switches, PBT caps, BT plus 2.4G plus USB-C.', 12);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (137, NOW(), 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=800&q=80', NOW(), 'Logitech M185 Wireless Mouse', 99.00, 160, '2.4GHz nano receiver, 12-month battery, 1000 DPI optical. The bulk-buy office mouse.', 13);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (138, NOW(), 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=800&q=80', NOW(), 'Logitech MX Master 3S', 999.00, 26, '8K DPI electromagnetic MagSpeed wheel, quiet clicks, multi-device Flow, USB-C.', 13);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (139, NOW(), 'https://images.unsplash.com/photo-1563297007-0686b7004448?auto=format&fit=crop&w=800&q=80', NOW(), 'Logitech G502 HERO', 549.00, 41, '25K HERO sensor, 11 programmable buttons, adjustable weights, LIGHTSYNC RGB.', 13);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (140, NOW(), 'https://images.unsplash.com/photo-1563297007-0686b7004448?auto=format&fit=crop&w=800&q=80', NOW(), 'Razer DeathAdder Essential', 349.00, 55, '6400 DPI optical sensor, 5 Hyperesponse buttons, ergonomic esports shape.', 13);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (142, NOW(), 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=800&q=80', NOW(), 'Glorious Model O Wireless', 799.00, 17, '69g ultralight honeycomb, BAMF 19K sensor, 71h battery, PTFE feet.', 13);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (144, NOW(), 'https://images.unsplash.com/photo-1563297007-0686b7004448?auto=format&fit=crop&w=800&q=80', NOW(), 'Logitech G304 Lightspeed', 449.00, 48, 'HERO 12K sensor, 250h wireless gaming, 6 buttons, 99g with AA battery.', 13);
+INSERT INTO public.product (id, date_created, image_url, last_updated, name, unit_price, units_in_stock, description, category_id) VALUES (150, NOW(), 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=800&q=80', NOW(), 'Logitech MX Anywhere 3S', 849.00, 23, '8K DPI tracks on glass, MagSpeed wheel, travel-size, USB-C quick charge.', 13);
+
+SELECT pg_catalog.setval('public.product_id_seq', (SELECT MAX(id) FROM public.product), true);
+SELECT pg_catalog.setval('public.product_category_id_seq', (SELECT MAX(id) FROM public.product_category), true);
+
 
 
 --
@@ -610,14 +640,14 @@ SELECT pg_catalog.setval('public.orders_id_seq', 36, true);
 -- Name: product_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_category_id_seq', 3, true);
+SELECT pg_catalog.setval('public.product_category_id_seq', (SELECT MAX(id) FROM public.product_category), true);
 
 
 --
 -- Name: product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_id_seq', 6, true);
+SELECT pg_catalog.setval('public.product_id_seq', (SELECT MAX(id) FROM public.product), true);
 
 
 --
