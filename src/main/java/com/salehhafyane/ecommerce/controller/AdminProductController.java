@@ -1,3 +1,4 @@
+// Admin CRUD endpoints for products, used by the add/edit product pages.
 package com.salehhafyane.ecommerce.controller;
 
 import com.salehhafyane.ecommerce.dto.ProductDTO;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+// Everything under /api/admin/products is restricted to ROLE_ADMIN by the security config.
 @RestController
 @RequestMapping("/api/admin/products")
 @RequiredArgsConstructor
@@ -17,20 +19,20 @@ public class AdminProductController {
 
     private final IProductService productService;
 
-    /** CREATE */
+    // POST /api/admin/products/add — inserts a new catalog entry.
     @PostMapping("/add")
     public ResponseEntity<?> addProduct(@RequestBody ProductDTO product) {
         productService.save(product);
         return ResponseEntity.ok().body(Map.of("message", "Product added successfully!"));
     }
 
-    /** READ – all products */
+    // GET /api/admin/products — the management table's data source.
     @GetMapping
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
         return ResponseEntity.ok(productService.getAll());
     }
 
-    /** READ – single product */
+    // GET /api/admin/products/{id} — one product for the edit form, 404 when unknown.
     @GetMapping("/{id}")
     public ResponseEntity<?> getProduct(@PathVariable Long id) {
         return productService.getById(id)
@@ -38,14 +40,14 @@ public class AdminProductController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    /** UPDATE */
+    // PUT /api/admin/products/{id} — overwrites the product's editable fields.
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody ProductDTO product) {
         productService.update(id, product);
         return ResponseEntity.ok().body(Map.of("message", "Product updated successfully!"));
     }
 
-    /** DELETE */
+    // DELETE /api/admin/products/{id} — removes the product from the catalog.
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
         productService.delete(id);

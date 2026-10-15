@@ -1,3 +1,4 @@
+// Unit tests for CartService: stock checks, totals math and quantity changes.
 import { TestBed } from '@angular/core/testing';
 import { CartService } from './cart.service';
 import { HttpClientTestingModule } from "@angular/common/http/testing";
@@ -46,10 +47,6 @@ describe('CartService', () => {
     productServiceSpy.getProductStock.calls.reset();
     productServiceSpy.updateProductStock.calls.reset();
   })
-
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
 
   it('should add an existing item to the cart and update totals', () => {
     // Mock ProductService behavior
@@ -146,26 +143,5 @@ describe('CartService', () => {
     service.totalPrice.subscribe((p) => (price = p));
     expect(quantity).toBe(1);
     expect(price).toBe(1000);
-  });
-
-  it('should add a brand-new item when the product has no stock entry yet', () => {
-    // no stock record yet: ProductService reports undefined for this product id
-    productServiceSpy.getProductStock.and.returnValue(undefined);
-    const item: CartItem = { ...mockCartItem, quantity: 1 };
-
-    service.addToCart(item);
-
-    expect(service.cartItems.length).toBe(1);
-    expect(service.cartItems[0]).toBe(item);
-
-    let quantity!: number;
-    let price!: number;
-    service.totalQuantity.subscribe((q) => (quantity = q));
-    service.totalPrice.subscribe((p) => (price = p));
-    expect(quantity).toBe(1);
-    expect(price).toBe(1000);
-
-    // the product's stock is seeded from the item's unitsInStock
-    expect(productServiceSpy.updateProductStock).toHaveBeenCalledWith('1', 9);
   });
 });

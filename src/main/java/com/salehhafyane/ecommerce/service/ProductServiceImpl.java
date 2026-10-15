@@ -1,3 +1,4 @@
+// Product CRUD for the admin page, converting between entity and DTO.
 package com.salehhafyane.ecommerce.service;
 
 import com.salehhafyane.ecommerce.dto.ProductDTO;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+// DTO-facing implementation of IProductService.
 @Service
 public class ProductServiceImpl implements IProductService {
 
@@ -21,16 +23,19 @@ public class ProductServiceImpl implements IProductService {
     @Autowired
     private ProductCategoryRepository productCategoryRepository;
 
+    // Builds a fresh entity from the DTO and inserts it.
     @Override
     public void save(ProductDTO productDTO) {
         productRepository.save(toEntity(new Product(), productDTO));
     }
 
+    // Deletes a product by id.
     @Override
     public void delete(Long id) {
         productRepository.deleteById(id);
     }
 
+    // Loads the existing row then overwrites its fields; throws 500 when the id is unknown.
     @Override
     public void update(Long id, ProductDTO updatedProduct) {
         Product product = productRepository.findById(id)
@@ -38,6 +43,7 @@ public class ProductServiceImpl implements IProductService {
         productRepository.save(toEntity(product, updatedProduct));
     }
 
+    // Whole catalog as DTOs.
     @Override
     public List<ProductDTO> getAll() {
         return productRepository.findAll().stream()
@@ -45,11 +51,13 @@ public class ProductServiceImpl implements IProductService {
                 .toList();
     }
 
+    // One product by id, or an empty Optional when unknown.
     @Override
     public Optional<ProductDTO> getById(Long id) {
         return productRepository.findById(id).map(ProductMapper::toDto);
     }
 
+    // Copies the DTO's fields onto the entity, resolving the category id to a real category row.
     private Product toEntity(Product product, ProductDTO dto) {
         product.setName(dto.getName());
         product.setDescription(dto.getDescription());

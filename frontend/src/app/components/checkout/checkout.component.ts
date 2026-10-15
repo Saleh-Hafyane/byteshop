@@ -1,6 +1,5 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
-  FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -17,6 +16,7 @@ import { Order } from '../../common/order';
 import { OrderItem } from '../../common/order-item';
 import { Purchase } from '../../common/purchase';
 
+// Standalone checkout page: cart summary, shipping address, payment and confirmation.
 @Component({
   selector: 'app-checkout',
   standalone: true,
@@ -37,6 +37,8 @@ export class CheckoutComponent implements OnInit {
     private router: Router,
     private checkoutService: CheckoutService
   ) {}
+
+  // Sets up the reactive form with cross-field validation.
   ngOnInit() {
     this.checkoutFormGroup = new FormGroup({
       address: new FormGroup({
@@ -103,6 +105,7 @@ export class CheckoutComponent implements OnInit {
     return this.checkoutFormGroup.get('creditCard.securityCode');
   }
 
+  // Validates and submits the purchase: reads from the cart and persists via CheckoutService.
   onSubmit() {
     if (this.checkoutFormGroup.invalid) {
       this.checkoutFormGroup.markAllAsTouched();
@@ -144,6 +147,7 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
+  // Updates the available credit card months when the year changes.
   handleShowedMonths() {
     const currentYear: number = new Date().getFullYear();
     const selectedYear: number = Number(
@@ -163,6 +167,7 @@ export class CheckoutComponent implements OnInit {
       .subscribe((data) => (this.creditCardMonths = data));
   }
 
+  // Subscribes to cart totals for the order summary.
   private cardDetails() {
     this.cartService.totalQuantity.subscribe(
       (data) => (this.totalQuantity = data)
@@ -170,6 +175,7 @@ export class CheckoutComponent implements OnInit {
     this.cartService.totalPrice.subscribe((data) => (this.totalPrice = data));
   }
 
+  // Resets the cart totals and the form.
   private resetCart() {
     //reset cart data
     this.cartService.cartItems = [];

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+// Standalone admin page: paginated order list with inline status badges and optimistic updates.
 import { NgForOf, NgIf, DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -30,6 +31,7 @@ export class ManageOrdersComponent implements OnInit {
   }
 
   ngOnInit() {
+  // Loads the paginated order list on init.
     this.getOrders();
   }
 

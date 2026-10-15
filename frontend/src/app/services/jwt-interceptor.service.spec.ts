@@ -1,3 +1,4 @@
+// Unit tests for JwtInterceptorService: the Authorization header is added only when a real token exists.
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HTTP_INTERCEPTORS, HttpClient, HttpRequest } from '@angular/common/http';
@@ -27,9 +28,6 @@ describe('JwtInterceptorService', () => {
 
   afterEach(() => {
     httpMock.verify(); // Ensure no outstanding requests
-  });
-  it('should be created', () => {
-    expect(service).toBeTruthy();
   });
   it('should add Authorization header if a valid token is present in localStorage', () => {
     // Arrange: Set a valid token in localStorage

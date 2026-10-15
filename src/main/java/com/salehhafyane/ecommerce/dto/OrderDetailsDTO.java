@@ -1,3 +1,4 @@
+// Full order view for the details page: summary plus address and item lines.
 package com.salehhafyane.ecommerce.dto;
 
 import com.salehhafyane.ecommerce.entity.OrderStatus;
@@ -10,24 +11,19 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Full read-model of an order: summary fields plus the shipping address and
- * the purchased items (with server-side product name snapshots). The customer
- * is represented by {@code customerUsername} only; no entities cross the
- * API boundary.
- */
+// Read-only model: the customer appears as a plain username, no entities in the JSON.
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDetailsDTO {
-    private Long id;
-    private String orderTrackingNumber;
-    private OrderStatus status;
-    private Integer totalQuantity;
-    private BigDecimal totalPrice;
-    private Date dateCreated;
-    private String customerUsername;
-    private AddressDTO address;
-    private List<OrderItemDTO> orderItems;
+    private Long id; // database id of the order
+    private String orderTrackingNumber; // UUID the customer tracks with
+    private OrderStatus status; // current lifecycle state
+    private Integer totalQuantity; // number of items bought
+    private BigDecimal totalPrice; // amount paid
+    private Date dateCreated; // when it was placed
+    private String customerUsername; // who bought it
+    private AddressDTO address; // shipping address
+    private List<OrderItemDTO> orderItems; // the purchased lines with name snapshots
 }

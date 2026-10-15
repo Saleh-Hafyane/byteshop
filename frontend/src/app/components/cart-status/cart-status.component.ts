@@ -1,3 +1,5 @@
+// Standalone presentational component: reads the cart observables and exposes the current user's role to the template.
+// Standalone presentational component: reads cart observables and exposes the current user's role to the template.
 import { Component, OnInit } from '@angular/core';
 import { CartService } from '../../services/cart.service';
 import { RouterLink } from '@angular/router';
@@ -14,10 +16,12 @@ import { CommonModule } from '@angular/common';
 export class CartStatusComponent implements OnInit {
   totalQuantity: number = 0;
   totalPrice: number = 0.0;
+  // Services injected via the constructor.
   constructor(
     private cartService: CartService,
     private authService: AuthService
   ) {}
+  // Reads the live cart totals and current user role on initialization.
   ngOnInit() {
     this.updateCartStatus();
   }
@@ -28,6 +32,7 @@ export class CartStatusComponent implements OnInit {
     );
     this.cartService.totalPrice.subscribe((data) => (this.totalPrice = data));
   }
+  // Exposes the JWT role claim to the template (used by the login menu).
   getRole() {
     return this.authService.getRole();
   }

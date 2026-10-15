@@ -1,3 +1,4 @@
+// Account entity that also acts as Spring Security's UserDetails for login.
 package com.salehhafyane.ecommerce.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -15,10 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-/**
- * Entity representing a User in the application.
- * Implements {@link UserDetails} for integration with Spring Security.
- */
+// Registered customer or admin; password here is only ever the bcrypt hash.
 @Entity
 @Table(name = "db_user")
 @Data
@@ -29,36 +27,40 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String firstname;
-    private String lastname;
+    private String firstname; // first name of the account holder
+    private String lastname; // last name of the account holder
     @Column(unique = true)
-    private String username;
+    private String username; // unique login name
     @Column(unique = true)
-    private String email;
+    private String email; // unique contact address
 
     @JsonIgnore
-    private String password;
+    private String password; // bcrypt hash, never sent back in JSON responses
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role; // USER or ADMIN, drives what the account may access
     @JsonIgnore
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    private Set<Order> orders = new HashSet<>();
+    private Set<Order> orders = new HashSet<>(); // everything this customer has bought
+
+    // Links an order to this user on both sides so cascade save works.
     public void add(Order order){
         if (order!=null){
             if (orders==null){
                 orders = new HashSet<>();
             }
-            orders.add(order); // Adds the order to the user's set of orders.
-            order.setUser(this); // Sets this user as the owner of the order.
+            orders.add(order);
+            order.setUser(this);
         }
     }
 
 
+    // Spring Security reads roles as "ROLE_..." authorities, e.g. ROLE_ADMIN.
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.toString()));
     }
 
+    // The four checks below always pass: this app doesn't expire, lock or disable accounts.
     @Override
     public boolean isAccountNonExpired() {
         return true;

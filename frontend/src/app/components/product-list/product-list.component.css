@@ -30,12 +30,16 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.product-box img {
-  max-width: 100%;
-  border-radius: 4px;
-  margin-bottom: 10px;
-  height: 200px;
-  object-fit: contain;
+.product-box img,
+.product-box .product-img {
+  width: 100%;
+  height: 250px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  object-fit: cover;
+  object-position: center 20%;
+  background: #f4f2f7;
+  padding: 0;
 }
 
 .product-box h1 {

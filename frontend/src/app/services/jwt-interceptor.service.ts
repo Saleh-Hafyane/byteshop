@@ -1,17 +1,16 @@
-// jwt-interceptor.service.ts
+// Attaches the JWT from localStorage to every outgoing HTTP request automatically.
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+// Registered as a provider in app.config.ts so HttpClient always runs through it.
 @Injectable()
 export class JwtInterceptorService implements HttpInterceptor {
 
-  /**
-   * This method intercepts any HTTP request sent out by Angular's HttpClient.
-   * If the user has a token, it will be added to the request headers.
-   */
+  // Clones the request with an Authorization header when a usable token exists.
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = localStorage.getItem('token');
+    // Guards against empty, "undefined" or "null" junk values stored by older sessions.
     if (token && token.trim() !== '' && token !== 'undefined' && token !== 'null') {
       request = request.clone({
         setHeaders: {

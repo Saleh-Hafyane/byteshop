@@ -1,3 +1,4 @@
+// Reads the JWT from each request's Authorization header and logs the user in for that request.
 package com.salehhafyane.ecommerce.config;
 
 import jakarta.servlet.FilterChain;
@@ -15,34 +16,27 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-/**
- * JwtAuthFilter is a Spring Security filter that processes each HTTP request once.
- * It validates the JWT token from the "Authorization" header and sets authentication
- * in the security context if the token is valid.
- */
+// Runs once per request before controllers, so @AuthenticationPrincipal works downstream.
 @Component
-@RequiredArgsConstructor // Generates a constructor for all final fields (jwtService and userDetailsService)
+@RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    // Dependency for handling JWT-related operations
+    // Signs and checks the tokens.
     private final JwtService jwtService;
 
-    // Dependency for loading user details (from the database)
+    // Loads the account behind the token's username.
     private final UserDetailsService userDetailsService;
 
-    /**
-     * The core logic for filtering each incoming request.
-     * Validates the JWT token and sets the security context if the token is valid.
-     */
+    // Validates the token and, if good, puts the user into Spring's security context.
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        // Extract the "Authorization" header from the HTTP request
+        // The browser sends credentials as "Authorization: Bearer <token>".
         final String authorizationHeader = request.getHeader("Authorization");
 
-        // If the header is null or does not start with "Bearer ", pass the request down the filter chain
+        // No token on this request: let it through anonymously (public endpoints still work).
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -54,30 +48,30 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             username = jwtService.extractUsername(jwtToken);
         } catch (Exception e) {
-            // Invalid or malformed token, proceed without authentication context
+            // Broken or expired token: continue without authentication instead of failing the request.
         }
 
-        // Check if a username is extracted and if the current security context is not already authenticated
+        // Only bother when we got a username and nobody is authenticated yet.
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
-            // Validate the JWT token against the loaded user details
+            // Signature, match and expiry must all check out.
             if (jwtService.isTokenValid(jwtToken, userDetails)) {
 
-                // Create an authentication token with user details and authorities
+                // Principal for this request, carrying the account's ROLE_* authorities.
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-                // Set additional details from the HTTP request
+                // Keeps request details (IP, session id) for auditing.
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                // Set the authentication in the security context
+                // From here on, security rules and @AuthenticationPrincipal see this user.
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
 
-        // Pass the request to the next filter in the chain
+        // Continue towards the controller either way.
         filterChain.doFilter(request, response);
     }
 }

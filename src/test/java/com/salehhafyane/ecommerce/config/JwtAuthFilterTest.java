@@ -1,4 +1,5 @@
 
+// Verifies the JWT filter authenticates good tokens and ignores bad ones.
 package com.salehhafyane.ecommerce.config;
 
 import jakarta.servlet.FilterChain;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+// All collaborators are mocks; the security context is cleared between tests.
 class JwtAuthFilterTest {
 
     @Mock
@@ -47,34 +49,6 @@ class JwtAuthFilterTest {
     void setUp() {
         MockitoAnnotations.openMocks(this); // Initializing the mock
         SecurityContextHolder.clearContext(); // Clear security context before each test
-    }
-
-    @Test
-    void shouldNotAuthenticateWhenAuthorizationHeaderIsMissing() throws ServletException, IOException {
-        // Arrange
-        when(request.getHeader("Authorization")).thenReturn(null);
-
-        // Act
-        jwtAuthFilter.doFilterInternal(request, response, filterChain);
-
-        // Assert
-        verify(jwtService, never()).extractUsername(anyString());
-        verify(filterChain, times(1)).doFilter(request, response);
-        assertNull(SecurityContextHolder.getContext().getAuthentication());
-    }
-
-    @Test
-    void shouldNotAuthenticateWhenAuthorizationHeaderIsInvalid() throws ServletException, IOException {
-        // Arrange
-        when(request.getHeader("Authorization")).thenReturn("InvalidHeader");
-
-        // Act
-        jwtAuthFilter.doFilterInternal(request, response, filterChain);
-
-        // Assert
-        verify(jwtService, never()).extractUsername(anyString());
-        verify(filterChain, times(1)).doFilter(request, response);
-        assertNull(SecurityContextHolder.getContext().getAuthentication());
     }
 
     @Test

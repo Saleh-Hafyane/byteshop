@@ -1,3 +1,4 @@
+// Bean-validation contract for the admin order-status request.
 package com.salehhafyane.ecommerce.dto;
 
 import com.salehhafyane.ecommerce.entity.OrderStatus;
@@ -15,12 +16,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * Bean-validation contract for the admin status-transition request: the
- * {@code @NotNull} guard rejects payloads that omit the status field entirely.
- * Unknown enum values fail earlier at deserialization (also mapped to 400) —
- * covered end-to-end in OrderWorkflowIntegrationTest.
- */
+// The @NotNull guard rejects payloads with no status; bad enum names fail even earlier at JSON parsing.
 class OrderStatusUpdateRequestValidationTest {
 
     private static ValidatorFactory factory;

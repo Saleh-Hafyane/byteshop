@@ -1,3 +1,4 @@
+// Wires up Spring Security's building blocks: user lookup, password hashing, login manager.
 package com.salehhafyane.ecommerce.config;
 
 import com.salehhafyane.ecommerce.entity.User;
@@ -13,47 +14,32 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-/**
- * This configuration class sets up the authentication-related beans for the application.
- * It integrates with Spring Security to define how users are loaded and authenticated.
- */
+// Provides the beans the login flow and JwtAuthFilter depend on.
 @Configuration
 @RequiredArgsConstructor
 public class AppConfig {
-    // Repository to fetch user details from the database
+    // Used to fetch account rows from db_user during login.
     private final UserRepository userRepository;
- /**
- * Defines a custom UserDetailsService bean.
- * The UserDetailsService is used by Spring Security to load user-specific data during authentication.
- */
+    // Loads one account by username; login fails with UsernameNotFoundException when unknown.
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByUsername(username).orElseThrow(()-> new UsernameNotFoundException("User not found"));
 
     }
-/**
- * Configures the AuthenticationProvider bean.
- * This bean is responsible for processing authentication requests.
- */
+    // Combines the user lookup above with password checking so Spring Security can log people in.
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService()); // Set the custom UserDetailsService
-        authProvider.setPasswordEncoder(passwordEncoder()); // Set the password encoder
+        authProvider.setUserDetailsService(userDetailsService()); // where accounts come from
+        authProvider.setPasswordEncoder(passwordEncoder()); // how passwords get compared
         return authProvider;
     }
-/**
- * Configures the AuthenticationManager bean.
- * The AuthenticationManager is used by Spring Security to manage authentication operations.
- */
+    // Entry point used by AuthService to verify a username/password pair.
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-    /**
- * Configures the PasswordEncoder bean.
- * The PasswordEncoder is used to encode and decode passwords securely.
- */
+    // One-way bcrypt hashing: plaintext passwords are never stored.
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

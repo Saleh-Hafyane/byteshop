@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+// Standalone order detail page: status update with inline enable/disable.
+import { ProductImagePipe } from '../../pipes/product-image.pipe';
 import { NgForOf, NgIf, DatePipe, DecimalPipe, NgOptimizedImage } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -15,7 +17,8 @@ import { OrderDetails } from '../../common/order-details';
     DatePipe,
     DecimalPipe,
     NgOptimizedImage,
-    RouterLink
+    RouterLink,
+    ProductImagePipe
   ],
   templateUrl: './order-details.component.html',
   styleUrl: './order-details.component.css'
@@ -29,10 +32,12 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
+  // Loads the order details from the route id on init.
     this.route.paramMap.subscribe(() => this.getOrderDetails());
   }
 
   getOrderDetails() {
+  // Fetches the order with the given id.
     const id = +(this.route.snapshot.paramMap.get('id')!);
     this.isLoading = true;
     this.loadError = null;

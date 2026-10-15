@@ -1,3 +1,4 @@
+// Read-only order queries with the ownership and admin checks built in.
 package com.salehhafyane.ecommerce.service;
 
 import com.salehhafyane.ecommerce.dto.OrderDetailsDTO;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+// Reads only, so the whole class runs in read-only transactions.
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -23,6 +25,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
 
     private final OrderRepository orderRepository;
 
+    // The customer's own history page, newest order first.
     @Override
     public List<OrderSummaryDTO> getOrdersForUser(Long userId) {
         return orderRepository.findByUserIdOrderByDateCreatedDesc(userId).stream()
@@ -30,6 +33,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                 .toList();
     }
 
+    // Admin dashboard list of every order, newest first.
     @Override
     public List<OrderSummaryDTO> getAllOrders() {
         return orderRepository.findAll(Sort.by(Sort.Direction.DESC, "dateCreated")).stream()
@@ -37,6 +41,7 @@ public class OrderQueryServiceImpl implements OrderQueryService {
                 .toList();
     }
 
+    // Owner or admin only — anyone else gets a 403 before seeing any order data.
     @Override
     public OrderDetailsDTO getOrderDetails(Long orderId, User requester) {
         Order order = orderRepository.findById(orderId)

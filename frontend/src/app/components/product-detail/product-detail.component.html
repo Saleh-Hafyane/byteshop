@@ -1,7 +1,7 @@
 <div class="detail-section py-5">
   <div class="container">
     <div class="product-detail row align-items-center">
-      <img src="assets/{{product.imageUrl}}" alt="product image" class="detail-img" fill>
+      <img [src]="product.imageUrl | productImage" alt="product image" class="detail-img">
       <div class="product-info">
         <h2 class="product-name fw-bold mb-3">{{product.name}}</h2>
         <div class="price text-primary fs-4 mb-4">{{product.unitPrice | currency: 'MAD '}}</div>

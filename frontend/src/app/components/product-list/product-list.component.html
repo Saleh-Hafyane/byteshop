@@ -27,8 +27,8 @@
           <div class="product-box card shadow-sm border-0 h-100 text-center">
             <a routerLink="/products/{{ product.id }}">
               <img
-                src="assets/{{ product.imageUrl }}"
-                class="img-responsive card-img-top img-fluid"
+                [src]="product.imageUrl | productImage"
+                class="img-responsive card-img-top img-fluid product-img"
                 alt="product image"
               />
             </a>

@@ -1,3 +1,4 @@
+// Verifies checkout builds orders correctly without booting Spring or a database.
 package com.salehhafyane.ecommerce.service;
 
 import com.salehhafyane.ecommerce.dto.AddressDTO;
@@ -25,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
+// Repositories are Mockito mocks, so the service runs in isolation.
 class CheckoutServiceImpTest {
 
     // Mocked dependencies

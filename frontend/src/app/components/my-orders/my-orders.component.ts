@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+// Standalone customer page: list of the user own orders with inline badges.
 import { NgForOf, NgIf, DatePipe, DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { OrderService } from '../../services/order.service';
@@ -26,6 +27,7 @@ export class MyOrdersComponent implements OnInit {
   }
 
   ngOnInit() {
+  // Loads the customer orders on init.
     this.getOrders();
   }
 

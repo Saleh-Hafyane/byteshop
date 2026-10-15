@@ -24,6 +24,9 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 # Copy the built jar from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
+# Uploads dir seeded with correct ownership for the named volume
+RUN mkdir -p /app/uploads && chown appuser:appgroup /app/uploads
+
 # Switch to non-root user
 USER appuser
 

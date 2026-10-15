@@ -1,4 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
+// Standalone top bar: shows the user identity and login/logout actions.
 import {Router, RouterLink} from "@angular/router";
 import {NgIf} from "@angular/common";
 import {NgbDropdown, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle} from "@ng-bootstrap/ng-bootstrap";

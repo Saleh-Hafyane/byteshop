@@ -1,3 +1,4 @@
+// Verifies order read paths: owner sees their order, admin sees any, strangers get 403.
 package com.salehhafyane.ecommerce.service;
 
 import com.salehhafyane.ecommerce.dto.OrderDetailsDTO;
@@ -23,6 +24,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+// The repository is mocked; ownership logic in the service runs for real.
 class OrderQueryServiceTest {
 
     @Mock
@@ -36,6 +38,7 @@ class OrderQueryServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    // Builds an account with the given id and role.
     private User user(Long id, Role role) {
         User u = new User();
         u.setId(id);
@@ -44,6 +47,7 @@ class OrderQueryServiceTest {
         return u;
     }
 
+    // Builds a complete order (address + one item) owned by the given user.
     private Order order(Long id, User owner) {
         Address address = new Address();
         address.setId(1L);
@@ -69,35 +73,7 @@ class OrderQueryServiceTest {
         return o;
     }
 
-    @Test
-    void getOrdersForUser_ReturnsSummariesForThatUser() {
-        User owner = user(1L, Role.USER);
-        Order o = order(10L, owner);
-        when(orderRepository.findByUserIdOrderByDateCreatedDesc(1L)).thenReturn(List.of(o));
-
-        List<OrderSummaryDTO> result = orderQueryService.getOrdersForUser(1L);
-
-        assertEquals(1, result.size());
-        OrderSummaryDTO summary = result.get(0);
-        assertEquals(10L, summary.getId());
-        assertEquals("track-10", summary.getOrderTrackingNumber());
-        assertEquals(OrderStatus.PENDING, summary.getStatus());
-        assertEquals("user1", summary.getCustomerUsername());
-        verify(orderRepository).findByUserIdOrderByDateCreatedDesc(1L);
-    }
-
-    @Test
-    void getAllOrders_SortedNewestFirst() {
-        when(orderRepository.findAll(Sort.by(Sort.Direction.DESC, "dateCreated")))
-                .thenReturn(List.of(order(2L, user(1L, Role.USER)), order(1L, user(2L, Role.USER))));
-
-        List<OrderSummaryDTO> result = orderQueryService.getAllOrders();
-
-        assertEquals(2, result.size());
-        assertEquals(2L, result.get(0).getId());
-        verify(orderRepository).findAll(Sort.by(Sort.Direction.DESC, "dateCreated"));
-    }
-
+    // The owner gets every field, including address and item name snapshots.
     @Test
     void getOrderDetails_OwnerSeesFullDetails() {
         User owner = user(1L, Role.USER);

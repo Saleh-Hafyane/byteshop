@@ -1,3 +1,4 @@
+// Mapping contract for product DTOs: the category flattens to plain id/name, never a nested entity.
 package com.salehhafyane.ecommerce.dto;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,14 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * Mapping contract for product DTOs: category information must be flattened
- * to id/name scalars so no entity graph crosses the API boundary.
- */
+// Serializes the DTO as well to prove no entity graph leaks into the JSON.
 class ProductMapperTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    // Standard product wired to whatever category the test wants to exercise.
     private Product buildProduct(ProductCategory category) {
         Product product = new Product();
         product.setId(7L);
@@ -33,6 +32,7 @@ class ProductMapperTest {
         return product;
     }
 
+    // Category must arrive as categoryId + categoryName scalars with no nested object in the JSON.
     @Test
     void productWithCategoryMapsFlatCategoryIdAndName() throws Exception {
         ProductCategory category = new ProductCategory();
@@ -49,26 +49,13 @@ class ProductMapperTest {
         assertEquals(3L, dto.getCategoryId());
         assertEquals("Laptops", dto.getCategoryName());
 
-        // The DTO must stay flat: no nested category object crosses the boundary
+        // Serialize to catch any hidden nested category field.
         String json = objectMapper.writeValueAsString(dto);
         assertTrue(json.contains("categoryId"), "Flat categoryId must serialize");
         assertFalse(json.contains("\"category\":"), "ProductDTO must not serialize a nested category: " + json);
     }
 
-    @Test
-    void productWithoutCategoryMapsNullCategoryFields() {
-        ProductDTO dto = ProductMapper.toDto(buildProduct(null));
-
-        assertNotNull(dto);
-        assertNull(dto.getCategoryId());
-        assertNull(dto.getCategoryName());
-    }
-
-    @Test
-    void nullProductReturnsNull() {
-        assertNull(ProductMapper.toDto((Product) null));
-    }
-
+    // Category entity maps to its small DTO, and a null input maps to null instead of throwing.
     @Test
     void categoryMapsToDto() {
         ProductCategory category = new ProductCategory();

@@ -1,3 +1,5 @@
+// Standalone admin page: list, add, edit and remove product categories with a reactive form.
+
 import {Component, OnInit} from '@angular/core';
 import {ProductCategory} from "../../common/product-category";
 import {NgForOf, NgIf} from "@angular/common";
@@ -25,12 +27,18 @@ export class ManageCategoriesComponent implements OnInit {
 
   constructor(private categoryService: CategoryService, private http: HttpClient, private router: Router) {
   }
+// Loads the category list when the component initializes.
+
 
   ngOnInit() {
+// Fetches the category list and stores it.
+
     this.getCategories();
   }
 
   getCategories() {
+// Adds a new category after basic validation.
+
     this.categoryService.getProductCategories().subscribe(data => {
       this.categories = data;
     });
@@ -48,12 +56,18 @@ export class ManageCategoriesComponent implements OnInit {
         this.categoryService.notifyCategoryAdded();
         this.getCategories();
       },
+// Prepares the given category for editing.
+
       error: (e) => {
         console.error('Error adding category:', e);
         alert('Failed to add category. Please try again.');
+// Cancels the current edit and resets the form state.
+
       }
     });
   }
+// Persists the edited category name and refreshes the list.
+
 
   startEdit(category: ProductCategory) {
     this.editingCategoryId = category.id;
@@ -71,6 +85,8 @@ export class ManageCategoriesComponent implements OnInit {
       return;
     }
     this.categoryService.updateProductCategory(id, this.editingCategoryName).subscribe({
+// Deletes a category and refreshes the list.
+
       next: () => {
         this.editingCategoryId = null;
         this.editingCategoryName = '';

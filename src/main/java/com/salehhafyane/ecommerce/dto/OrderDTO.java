@@ -1,3 +1,4 @@
+// Totals section of the checkout request; the server re-verifies them against the items.
 package com.salehhafyane.ecommerce.dto;
 
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+// Carries the cart's grand total and item count from the browser to the checkout endpoint.
 @Data
 @Builder
 @NoArgsConstructor
@@ -16,9 +18,9 @@ import java.math.BigDecimal;
 public class OrderDTO {
     @NotNull(message = "Total quantity is required")
     @PositiveOrZero(message = "Total quantity must be zero or positive")
-    private Integer totalQuantity;
+    private Integer totalQuantity; // sum of item quantities in the cart
 
     @NotNull(message = "Total price is required")
     @PositiveOrZero(message = "Total price must be zero or positive")
-    private BigDecimal totalPrice;
+    private BigDecimal totalPrice; // cart grand total in the request
 }

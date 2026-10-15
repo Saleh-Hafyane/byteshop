@@ -1,3 +1,4 @@
+// Verifies admin status transitions without booting Spring or a database.
 package com.salehhafyane.ecommerce.service;
 
 import com.salehhafyane.ecommerce.dto.OrderSummaryDTO;
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
+// Only the repository is mocked; the service logic runs for real.
 class OrderAdminServiceTest {
 
     @Mock

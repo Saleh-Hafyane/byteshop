@@ -1,3 +1,4 @@
+// Registration clash on username or email; carries per-field messages for the 409 response.
 package com.salehhafyane.ecommerce.exceptions;
 
 import lombok.Getter;
@@ -5,30 +6,27 @@ import lombok.Getter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-// This exception is thrown when a user tries to register with a username or email that already exists in the system.
+// Thrown when a register attempt uses a username or email that already exists.
 @Getter
 public class UserAlreadyExistsException extends RuntimeException {
-    private final String field;
-    private final Map<String, String> fieldErrors;
-    // Constructor for a general error with no specific field.
+    private final String field; // single offending field, kept for older call sites
+    private final Map<String, String> fieldErrors; // field name -> message, e.g. {"email": "Email already in use"}
+    // General error without a specific field.
     public UserAlreadyExistsException(String message) {
-        super(message); // Pass the message to the parent RuntimeException class.
+        super(message);
         this.field = null;
         this.fieldErrors = Collections.emptyMap();
     }
-    // Constructor for a specific field error (e.g., username or email). => legacy
+    // Single-field error, e.g. only the username was taken.
     public UserAlreadyExistsException(String field, String message) {
         super(message);
         this.field = field;
-        // Create a map with the field and its corresponding error message. If the field is null, return an empty map.
         this.fieldErrors = field != null ? Map.of(field, message) : Collections.emptyMap();
     }
-    // Constructor for multiple field errors (e.g., both username and email).
+    // Multi-field error, e.g. username and email both taken at once.
     public UserAlreadyExistsException(String message, Map<String, String> fieldErrors) {
         super(message);
-        // backward compatibility: if fieldErrors is not empty, set the first key as the field; otherwise, set it to null.
         this.field = fieldErrors != null && !fieldErrors.isEmpty() ? fieldErrors.keySet().iterator().next() : null;
-        // Create a defensive copy of the fieldErrors map to prevent external modifications.
-        this.fieldErrors = fieldErrors != null ? new HashMap<>(fieldErrors) : Collections.emptyMap();
+        this.fieldErrors = fieldErrors != null ? new HashMap<>(fieldErrors) : Collections.emptyMap(); // copy so callers can't mutate it
     }
 }

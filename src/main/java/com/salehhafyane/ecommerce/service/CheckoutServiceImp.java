@@ -1,3 +1,4 @@
+// Turns the checkout request into saved rows: order, items and address in one transaction.
 package com.salehhafyane.ecommerce.service;
 
 import com.salehhafyane.ecommerce.dto.OrderItemDTO;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 import java.util.UUID;
 
+// Client only sends data — prices, names, status and tracking number all come from here.
 @Service
 public class CheckoutServiceImp implements CheckoutService {
 
@@ -33,42 +35,42 @@ public class CheckoutServiceImp implements CheckoutService {
         this.productRepository = productRepository;
     }
 
+    // One transaction: build order, verify products, save everything, return the tracking number.
     @Override
     @Transactional
     public PurchaseResponse makeOrder(PurchaseRequest purchase, User user) {
-        // Build a new order from the purchase request (tracking number and status are server-generated)
+        // Build the order; status always starts PENDING and no tracking number is taken from the client.
         Order order = OrderMapper.toEntity(purchase.getOrder());
 
-        // Generate a unique order tracking number
+        // Fresh UUID so every order can be tracked with its own number.
         String orderTrackingNumber = generateOrderTrackingNumber();
         order.setOrderTrackingNumber(orderTrackingNumber);
 
-        // Add order items to the order
+        // Every line is validated against the real catalog before the order is saved.
         for (OrderItemDTO itemDTO : purchase.getOrderItems()) {
             OrderItem item = OrderMapper.toEntity(itemDTO);
-            // Server-side snapshot of the product name at purchase time; also
-            // validates that the product still exists (productId has no FK).
+            // Copy the current product name onto the line, and 400 if the product id no longer exists.
             Product product = productRepository.findById(itemDTO.getProductId())
                     .orElseThrow(() -> new IllegalArgumentException("Product not found: " + itemDTO.getProductId()));
             item.setProductName(product.getName());
             order.add(item);
         }
 
-        // Set the address for the order
-        Address savedAddress = addressRepository.save(OrderMapper.toEntity(purchase.getAddress())); // Persist the address first
+        // Address gets its own row first because the order links to its id.
+        Address savedAddress = addressRepository.save(OrderMapper.toEntity(purchase.getAddress()));
         order.setAddress(savedAddress);
 
-        // Assign the user to the order
+        // The order belongs to the logged-in user, never to an id sent by the browser.
         order.setUser(user);
 
-        // Save the order to the database
+        // Cascade saves the order together with all its items.
         orderRepository.save(order);
 
-        // Return a response with the order tracking number
+        // The only value the confirmation page needs back.
         return new PurchaseResponse(orderTrackingNumber);
     }
 
-    // Helper method to generate a unique order tracking number
+    // Tracking numbers are plain random UUIDs.
     private String generateOrderTrackingNumber() {
         return UUID.randomUUID().toString();
     }

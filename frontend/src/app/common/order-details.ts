@@ -1,22 +1,22 @@
 import { OrderSummary } from './order-summary';
 
-/** Single purchased line mirroring the backend OrderItemDTO (response shape). */
+// One purchased line as the backend sends it in order details.
 export interface OrderItemDetail {
-  imageUrl: string;
-  unitPrice: number;
-  quantity: number;
-  productId: number;
-  productName: string | null;
+  imageUrl: string; // product picture at purchase time
+  unitPrice: number; // price per unit when bought
+  quantity: number; // units bought
+  productId: number; // catalog product this line came from
+  productName: string | null; // server-side name snapshot
 }
 
-/** Shipping address snapshot mirroring the backend AddressDTO. */
+// Shipping address snapshot attached to the order details.
 export interface OrderAddress {
-  city: string;
-  fullAddress: string;
+  city: string; // delivery city
+  fullAddress: string; // delivery street line
 }
 
-/** Full read-model mirroring the backend OrderDetailsDTO. */
+// Full order view for the details page: summary fields plus address and items.
 export interface OrderDetails extends OrderSummary {
-  address: OrderAddress | null;
-  orderItems: OrderItemDetail[];
+  address: OrderAddress | null; // may be null on old orders
+  orderItems: OrderItemDetail[]; // the purchased lines
 }

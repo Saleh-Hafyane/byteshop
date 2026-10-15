@@ -1,3 +1,4 @@
+// Admin request body for changing an order's status; only known statuses pass parsing.
 package com.salehhafyane.ecommerce.dto;
 
 import com.salehhafyane.ecommerce.entity.OrderStatus;
@@ -7,16 +8,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Request body for the admin order-status transition endpoint.
- * The enum type guarantees only known statuses reach the service;
- * unknown values fail earlier at deserialization (mapped to 400).
- */
+// The enum type rejects typos like "SHIPPEDD" at JSON parsing time with a 400.
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderStatusUpdateRequest {
     @NotNull(message = "Status is required")
-    private OrderStatus status;
+    private OrderStatus status; // the status to switch to, e.g. SHIPPED
 }

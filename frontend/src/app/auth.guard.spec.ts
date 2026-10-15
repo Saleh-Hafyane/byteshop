@@ -1,3 +1,4 @@
+// Unit tests for authGuard: logged-in users pass, everyone else is sent to /login.
 import { TestBed } from '@angular/core/testing';
 import { CanActivateFn, Router } from '@angular/router';
 

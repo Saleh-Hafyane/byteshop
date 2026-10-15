@@ -1,3 +1,4 @@
+// Central place that converts every thrown exception into a clean JSON error with the right HTTP status.
 package com.salehhafyane.ecommerce.exceptions;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+// Applies to every controller; clients always get {status, message, timestamp, errors}.
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -120,6 +122,28 @@ public class GlobalExceptionHandler {
                 null
         );
         return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
+    }
+
+    // Catches invalid image uploads -> 415 Unsupported Media Type (or 404 when missing)
+    @ExceptionHandler(InvalidImageException.class)
+    public ResponseEntity<ApiError> handleInvalidImage(InvalidImageException ex) {
+        String msg = ex.getMessage() == null ? "" : ex.getMessage().toLowerCase();
+        HttpStatus status = (msg.contains("not found") || msg.contains("invalid filename"))
+                ? HttpStatus.NOT_FOUND : HttpStatus.UNSUPPORTED_MEDIA_TYPE;
+        ApiError apiError = new ApiError(status.value(), ex.getMessage(), LocalDateTime.now(), null);
+        return new ResponseEntity<>(apiError, status);
+    }
+
+    // Catches multipart size overflow -> 413 Payload Too Large
+    @ExceptionHandler(org.springframework.web.multipart.MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiError> handleMaxUploadSize(org.springframework.web.multipart.MaxUploadSizeExceededException ex) {
+        ApiError apiError = new ApiError(
+                HttpStatus.PAYLOAD_TOO_LARGE.value(),
+                "Image must not exceed 5 MB",
+                LocalDateTime.now(),
+                null
+        );
+        return new ResponseEntity<>(apiError, HttpStatus.PAYLOAD_TOO_LARGE);
     }
 
     // Catches standard RuntimeExceptions -> 500 Internal Server Error

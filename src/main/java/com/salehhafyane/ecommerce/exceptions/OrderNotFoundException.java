@@ -1,9 +1,6 @@
+// Thrown when an order id doesn't exist; mapped to 404 by the global handler.
 package com.salehhafyane.ecommerce.exceptions;
 
-/**
- * Thrown when an order cannot be found. Mapped to 404 by
- * {@link GlobalExceptionHandler}.
- */
 public class OrderNotFoundException extends RuntimeException {
 
     public OrderNotFoundException(Long orderId) {

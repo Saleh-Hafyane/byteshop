@@ -82,3 +82,41 @@ h3 {
   background-color: #8b31b3;
   border-color: #8b31b3;
 }
+
+/* Simple image picker preview */
+.simple-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.simple-preview {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  object-position: center 20%;
+  border-radius: 8px;
+  background: #f4f2f7;
+  border: 1px solid #e0e0e0;
+}
+
+.placeholder-box {
+  width: 140px;
+  height: 140px;
+  border-radius: 8px;
+  background: #e9ecef;
+  border: 1px dashed #adb5bd;
+}
+
+.simple-preview-row .file-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #495057;
+}
+
+.hint {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-top: 6px;
+}

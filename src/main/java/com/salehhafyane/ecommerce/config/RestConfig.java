@@ -1,3 +1,4 @@
+// Tightens Spring Data REST: catalog endpoints become read-only and expose entity ids.
 package com.salehhafyane.ecommerce.config;
 
 import com.salehhafyane.ecommerce.entity.City;
@@ -15,63 +16,48 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-/**
- * Configuration class to customize the behavior of Spring Data REST repositories.
- * It configures HTTP methods for specific entities, CORS support, and entity ID exposure.
- */
+// Without this, Spring Data REST would expose public write endpoints for catalog tables.
 @Configuration
 public class RestConfig implements RepositoryRestConfigurer {
-    // EntityManager provides access to the persistence context and the metamodel of managed entities.
+    // Needed to list every managed entity from JPA's metamodel.
     private final EntityManager entityManager;
-    // Constructor for dependency injection of EntityManager.
     @Autowired
     public RestConfig(EntityManager _entityManager){
         entityManager = _entityManager;
     }
-/**
- * Configures the repository REST settings, including disabling specific HTTP methods,
- * enabling CORS, and exposing entity IDs.
- */
+    // Main hook: disable writes, expose ids, and allow GET-only CORS for SDR endpoints.
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
         RepositoryRestConfigurer.super.configureRepositoryRestConfiguration(config, cors);
-        //disable http methods : put, post, delete, patch.
+        // Catalog tables may only be read through SDR; writes go through admin controllers.
         disableHttpMethods(Product.class,config);
         disableHttpMethods(ProductCategory.class,config);
         disableHttpMethods(City.class,config);
-        // Expose entity IDs in REST responses
+        // Ids must appear in responses so the frontend can use them in links and queries.
         exposeIds(config);
-        // Global CORS for Spring Data REST endpoints. Web MVC CORS configuration
-        // (CorsConfig) does NOT apply to SDR, and @CrossOrigin on repositories was
-        // removed, so reads must be declared here. Writes are disabled above, so
-        // only read methods are permitted cross-origin.
+        // SDR doesn't inherit the Web MVC CORS rules, so reads declare their own here (writes are disabled anyway).
         cors.addMapping("/**")
                 .allowedOriginPatterns("*")
                 .allowedMethods("GET", "HEAD", "OPTIONS")
                 .allowedHeaders("*")
                 .maxAge(3600);
     }
-    // Disables the specified HTTP methods (PUT, POST, DELETE, PATCH) for a given entity type.
+    // Blocks PUT, POST, DELETE and PATCH on both single items and collections of this entity.
     public void disableHttpMethods(Class entityClass,RepositoryRestConfiguration config){
-        // HTTP methods to disable
+        // The four write verbs nobody may call on catalog endpoints.
         HttpMethod[] unsupportedMethods = {HttpMethod.PUT,HttpMethod.POST,HttpMethod.DELETE,HttpMethod.PATCH};
-        // Disable the specified methods for both item and collection resources
         config.getExposureConfiguration().forDomainType(entityClass).withItemExposure((metadata, httpMethods)->httpMethods.disable(unsupportedMethods)).withCollectionExposure((metadata, httpMethods) -> httpMethods.disable(unsupportedMethods));
 
     }
-/**
- * Exposes the IDs of all entities in the persistence context.
- * By default, Spring Data REST does not expose entity IDs in responses, but this can be overridden.
- */
+    // Adds every entity id field to SDR responses, which they are hidden by default.
     private void exposeIds(RepositoryRestConfiguration config) {
-        //get entity types from EntityManager
+        // All entity types JPA currently manages.
         Set<EntityType<?>> entities = entityManager.getMetamodel().getEntities();
-        //get entity classes
+        // Turn them into plain classes for exposeIdsFor.
         List<Class> entityClasses = new ArrayList<>();
         for (EntityType entityType:entities){
             entityClasses.add(entityType.getJavaType());
         }
-        // Convert the list of classes to an array and configure ID exposure for each entity
         Class[] entityClassesArray  = entityClasses.toArray(new Class[0]);
         config.exposeIdsFor(entityClassesArray);
 

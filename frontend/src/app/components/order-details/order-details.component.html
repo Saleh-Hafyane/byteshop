@@ -33,7 +33,7 @@
           <tbody>
             <tr *ngFor="let item of order.orderItems">
               <td>
-                <img *ngIf="item.imageUrl" [ngSrc]="item.imageUrl" width="50" height="50" alt="product image" class="me-2 item-thumb" />
+                <img *ngIf="item.imageUrl" [ngSrc]="(item.imageUrl | productImage)" width="50" height="50" alt="product image" class="me-2 item-thumb" />
                 {{ itemName(item.productId, item.productName) }}
               </td>
               <td>{{ item.quantity }}</td>

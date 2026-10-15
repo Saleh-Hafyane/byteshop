@@ -10,5 +10,7 @@
 
 .item-thumb {
   object-fit: cover;
-  border-radius: 4px;
+  object-position: center 20%;
+  border-radius: 8px;
+  background: #f4f2f7;
 }

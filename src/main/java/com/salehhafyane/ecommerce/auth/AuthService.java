@@ -1,3 +1,4 @@
+// Handles registration and login: checks duplicates, hashes passwords, issues JWTs.
 package com.salehhafyane.ecommerce.auth;
 
 import com.salehhafyane.ecommerce.config.JwtService;
@@ -16,29 +17,26 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
-// This service class handles authentication-related operations, such as user registration and login.
+// The only place that hands out tokens.
 @Service
 @AllArgsConstructor
 public class AuthService {
 
-    // Repository to interact with the user database.
+    // Account table.
     private final UserRepository userRepository;
 
-    // Utility for encoding passwords securely.
+    // Hashes new passwords and compares login attempts.
     private final PasswordEncoder passwordEncoder;
 
-    // Service responsible for generating and managing JWT tokens.
+    // Builds the JWT sent back to the browser.
     private final JwtService jwtService;
 
-    // AuthenticationManager for handling authentication requests.
+    // Verifies username/password pairs on login.
     private final AuthenticationManager authenticationManager;
 
-    /*
-    Registers a new user by saving their information in the database, encrypting the password, and assigning a default role.
-    It then generates a JWT token for the user.
-    */
+    // Creates the account (with duplicate checks), then immediately returns a token.
     public AuthenticationResponse register(RegisterRequest request) {
-        // Check if username and/or email are already taken to prevent duplicates.
+        // Username and email are unique; report both clashes in one response.
         Map<String, String> duplicateErrors = new HashMap<>();
         if (userRepository.existsByUsername(request.getUsername())) {
             duplicateErrors.put("username", "Username already exists: " + request.getUsername());
@@ -50,50 +48,44 @@ public class AuthService {
             throw new UserAlreadyExistsException("Registration failed due to existing credentials", duplicateErrors);
         }
 
-        // Build a new User entity based on the registration request data.
+        // Brand-new account, always role USER — admin is never chosen at signup.
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
                 .username(request.getUsername())
                 .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))  // Encrypts the user's password.
-                .role(Role.USER)  // Assign default role of USER.
+                .password(passwordEncoder.encode(request.getPassword()))  // stored only as a hash
+                .role(Role.USER)  // customers can't self-assign admin
                 .build();
 
-        // Save the new user to the database.
         userRepository.save(user);
-        // Add the role to the extra claims
+        // Role travels inside the token so the frontend can react without an extra call.
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("role", user.getRole());
-        // Generate a JWT token for the newly registered user.
         var jwtToken = jwtService.generateToken(extraClaims,user);
 
-        // Return the authentication response with the JWT token and username.
+        // Everything the login page needs: token plus who logged in.
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .username(request.getUsername())
                 .build();
     }
 
-    /*
-     Authenticates an existing user by verifying the username and password.
-     Generates and returns a JWT token if authentication is successful.
-    */
+    // Verifies the credentials through AuthenticationManager, then issues a fresh token.
     public AuthenticationResponse authenticate(AuthRequest request) {
-        // Authenticate the user using the provided credentials.
+        // Wrong username or password throws here and becomes a 401.
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
 
-        // Retrieve the user details from the database. Throws an exception if the user is not found.
+        // Loaded only after the password check passed.
         var user = userRepository.findByUsername(request.getUsername()).orElseThrow();
-        // add the role to the extra claims
+        // Embed the role in the token claims as during registration.
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("role", user.getRole());
-        // Generate a JWT token for the authenticated user.
         var jwtToken = jwtService.generateToken(extraClaims,user);
 
-        // Return the authentication response with the JWT token and username.
+        // Token, username and role for the frontend session.
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .username(request.getUsername())

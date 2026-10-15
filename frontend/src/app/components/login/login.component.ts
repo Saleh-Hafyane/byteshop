@@ -1,4 +1,4 @@
-// login.component.ts
+// Standalone login form: username/password login with token storage and server-side error display.
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
@@ -47,6 +47,8 @@ export class LoginComponent {
     }
   }
 
+// Calls the auth service and stores the returned token and username.
+
   login(): void {
     this.errorMessage = null;
 
@@ -71,6 +73,8 @@ export class LoginComponent {
         this.handleError(error);
       },
     });
+// Maps server errors to a friendly message shown under the form.
+
   }
 
   private handleError(error: HttpErrorResponse): void {

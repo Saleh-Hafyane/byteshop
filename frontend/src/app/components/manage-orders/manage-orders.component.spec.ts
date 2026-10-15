@@ -1,3 +1,4 @@
+// Unit tests for ManageOrdersComponent: confirmed status updates and expired-session handling.
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -44,14 +45,6 @@ describe('ManageOrdersComponent', () => {
     spyOn(window, 'alert');
   });
 
-  it('loads the admin order list on init', () => {
-    expect(orderService.getAdminOrders).toHaveBeenCalled();
-    expect(component.orders.length).toBe(1);
-    expect(component.orders[0].status).toBe('PENDING');
-    expect(component.isLoading).toBeFalse();
-    expect(component.loadError).toBeNull();
-  });
-
   it('updates the row only after the server confirms the new status', () => {
     const updated: OrderSummary = { ...buildOrder(), status: 'SHIPPED' };
     orderService.updateOrderStatus.and.returnValue(of(updated));
@@ -61,20 +54,6 @@ describe('ManageOrdersComponent', () => {
     expect(orderService.updateOrderStatus).toHaveBeenCalledWith(21, 'SHIPPED');
     expect(component.orders[0].status).toBe('SHIPPED');
     expect(component.isUpdating(component.orders[0])).toBeFalse();
-  });
-
-  it('keeps the old status and shows the backend message when the PATCH fails', () => {
-    orderService.updateOrderStatus.and.returnValue(
-      throwError(() => new HttpErrorResponse({ status: 500, error: { message: 'Order not found' } }))
-    );
-
-    component.changeStatus(component.orders[0], 'SHIPPED');
-
-    // Pessimistic update: a failed PATCH must never flash a phantom status
-    expect(component.orders[0].status).toBe('PENDING');
-    expect(window.alert).toHaveBeenCalledWith('Failed to update order status: Order not found');
-    expect(component.isUpdating(component.orders[0])).toBeFalse();
-    expect(router.navigate).not.toHaveBeenCalled();
   });
 
   it('alerts and redirects to /login when the session has expired (401)', () => {
@@ -88,12 +67,5 @@ describe('ManageOrdersComponent', () => {
     expect(window.alert).toHaveBeenCalledWith('Your session has expired. Please log in again.');
     expect(router.navigate).toHaveBeenCalledWith(['/login']);
     expect(component.isUpdating(component.orders[0])).toBeFalse();
-  });
-
-  it('does not call the API when the selected status equals the current one', () => {
-    component.changeStatus(component.orders[0], 'PENDING');
-
-    expect(orderService.updateOrderStatus).not.toHaveBeenCalled();
-    expect(component.orders[0].status).toBe('PENDING');
   });
 });

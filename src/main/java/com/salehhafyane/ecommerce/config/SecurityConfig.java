@@ -1,3 +1,4 @@
+// Decides which endpoints need which role, and switches security to stateless JWT mode.
 package com.salehhafyane.ecommerce.config;
 
 import lombok.RequiredArgsConstructor;
@@ -13,50 +14,50 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-// Security configuration class for customizing Spring Security.
+// The single source of truth for URL access rules.
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    // Custom JWT authentication filter to process and validate JWT tokens.
+    // Injected so every request passes through JWT validation first.
     private final JwtAuthFilter jwtAuthFilter;
 
-    // Authentication provider for user authentication and password encoding.
+    // Verifies username/password on /api/v1/auth/authenticate.
     private final AuthenticationProvider authenticationProvider;
 
-    // Defines the security filter chain, configuring how HTTP requests are secured.
+    // Builds the filter chain: no sessions, no CSRF, rules below, JWT filter in front.
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Disable CSRF protection since the application uses JWT for authentication.
+                // CSRF is unnecessary because tokens are sent in headers, not cookies.
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(ex -> ex
+                        // Any unauthenticated hit on a protected route answers plain 401.
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )
-                // Configure request authorization rules.
+                // URL rules, checked top to bottom.
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/api/v1/auth/**").permitAll() // Auth endpoints are public.
-                            .requestMatchers("/error").permitAll()      // Allow Spring's error dispatch (needed for GlobalExceptionHandler).
-                            .requestMatchers("/api/checkout/**").hasRole("USER") // Protect checkout endpoints.
-                            .requestMatchers("/api/user/**").hasRole("USER")     // Protect user order history endpoints.
-                            .requestMatchers("/api/orders/**").hasAnyRole("USER", "ADMIN") // Order details: owner or admin (ownership enforced in service).
-                            .requestMatchers("/api/admin/**").hasRole("ADMIN")   // Protect admin endpoints.
-                            .anyRequest().permitAll();
+                    auth.requestMatchers("/api/v1/auth/**").permitAll() // register/login are public
+                            .requestMatchers("/error").permitAll()      // error dispatch must stay reachable for the exception handler
+                            .requestMatchers("/api/checkout/**").hasRole("USER") // only logged-in customers may buy
+                            .requestMatchers("/api/user/**").hasRole("USER")     // order history is per-account
+                            .requestMatchers("/api/orders/**").hasAnyRole("USER", "ADMIN") // details: owner or admin, checked in the service
+                            .requestMatchers("/api/admin/**").hasRole("ADMIN")   // admin area is admin-only
+                            .anyRequest().permitAll(); // catalog and image reads stay public
                 })
 
-                // Configure session management to use stateless sessions (since JWT is used).
+                // JWT means nothing is stored server-side between requests.
                 .sessionManagement(session -> {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })
 
-                // Set the authentication provider for verifying user credentials.
+                // Wires in the credentials checker used by the auth endpoint.
                 .authenticationProvider(authenticationProvider)
 
-                // Add the custom JWT authentication filter before the default username/password filter.
+                // Token validation happens before Spring's own username/password filter.
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // Build and return the security filter chain.
         return http.build();
     }
 }

@@ -1,3 +1,4 @@
+// Converts order DTOs to entities on the way in, and entities to flat DTOs on the way out.
 package com.salehhafyane.ecommerce.dto;
 
 import com.salehhafyane.ecommerce.entity.Address;
@@ -6,9 +7,11 @@ import com.salehhafyane.ecommerce.entity.OrderItem;
 import com.salehhafyane.ecommerce.entity.OrderStatus;
 import lombok.NoArgsConstructor;
 
+// Static utility class only, so the constructor is private.
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public final class OrderMapper {
 
+    // Request DTO to a new Address entity, null-safe.
     public static Address toEntity(AddressDTO dto) {
         if (dto == null) {
             return null;
@@ -19,6 +22,7 @@ public final class OrderMapper {
         return address;
     }
 
+    // Request DTO to a new Order, always starting as PENDING regardless of what the client sent.
     public static Order toEntity(OrderDTO dto) {
         if (dto == null) {
             return null;
@@ -30,6 +34,7 @@ public final class OrderMapper {
                 .build();
     }
 
+    // Request DTO to a new OrderItem; deliberately skips productName so it can't be spoofed.
     public static OrderItem toEntity(OrderItemDTO dto) {
         if (dto == null) {
             return null;
@@ -42,13 +47,7 @@ public final class OrderMapper {
         return item;
     }
 
-    /**
-     * Maps an order to its flat list-view representation. The customer is
-     * reduced to their username; no nested entities are copied.
-     *
-     * <p>Must be called inside a transaction so {@code order.getUser()} can
-     * be resolved safely.</p>
-     */
+    // Order to the list-row DTO; call inside a transaction so the lazy user can load.
     public static OrderSummaryDTO toSummary(Order order) {
         if (order == null) {
             return null;
@@ -64,14 +63,7 @@ public final class OrderMapper {
                 .build();
     }
 
-    /**
-     * Maps an order to its full details representation, including the
-     * shipping address and the purchased items (with their server-side
-     * product name snapshots).
-     *
-     * <p>Must be called inside a transaction so the lazy {@code orderItems}
-     * collection can be materialized.</p>
-     */
+    // Order to the full details DTO with address and item lines; call inside a transaction so lazy items can load.
     public static OrderDetailsDTO toDetails(Order order) {
         if (order == null) {
             return null;
@@ -85,12 +77,14 @@ public final class OrderMapper {
                 .dateCreated(order.getDateCreated())
                 .customerUsername(order.getUser() != null ? order.getUser().getUsername() : null)
                 .build();
+        // Address is optional on the DTO, so only set it when the order actually has one.
         if (order.getAddress() != null) {
             details.setAddress(AddressDTO.builder()
                     .city(order.getAddress().getCity())
                     .fullAddress(order.getAddress().getFullAddress())
                     .build());
         }
+        // Copies every item, including the server-owned product name snapshot.
         if (order.getOrderItems() != null) {
             details.setOrderItems(order.getOrderItems().stream()
                     .map(item -> OrderItemDTO.builder()

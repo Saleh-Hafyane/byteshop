@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+// Standalone catalog listing: search by keyword, filter by category, sort, paginate and add to cart.
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../common/product';
-import { CurrencyPipe, NgForOf, NgIf, NgOptimizedImage } from '@angular/common';
+import { ProductImagePipe } from '../../pipes/product-image.pipe';
+import { CurrencyPipe, NgForOf, NgIf } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
 import { CartService } from '../../services/cart.service';
@@ -18,6 +20,7 @@ import { Subscription } from 'rxjs';
     NgIf,
     RouterLink,
     NgbPagination,
+    ProductImagePipe,
   ],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',
@@ -36,6 +39,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   role: String = '';
   private availabilitySub: Subscription | null = null;
 
+  // Service wiring: product, route, cart, auth and router.
   constructor(
     private productService: ProductService,
     private route: ActivatedRoute,
@@ -45,6 +49,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+  // Handles the keyword search case and category/filter-driven routing.
     this.route.paramMap.subscribe((value) => {
       this.productsList();
     });
@@ -66,6 +71,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+  // Cleans up the availability subscription to avoid memory leaks.
     this.availabilitySub?.unsubscribe();
   }
 
@@ -74,6 +80,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   productsList() {
+  // Keeps the DOM stable with NgFor trackBy.
     this.hasKeyword = this.route.snapshot.paramMap.has('keyword');
     if (this.hasKeyword) {
       this.handleSearch();
@@ -83,6 +90,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   handleSearch() {
+  // Dispatches search or category-driven product list.
     const keyword = this.route.snapshot.paramMap.get('keyword')!;
     if (keyword != this.prevKeyword) {
       this.pageNumber = 1;
@@ -99,6 +107,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   handleProductList() {
+  // Executes the search with pagination.
     const hasCategoryId: boolean = this.route.snapshot.paramMap.has('id');
     if (hasCategoryId) {
       this.categoryId = +this.route.snapshot.paramMap.get('id')!;

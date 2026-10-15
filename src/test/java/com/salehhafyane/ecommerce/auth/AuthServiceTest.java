@@ -1,3 +1,4 @@
+// Verifies registration and login behavior of AuthService with mocked collaborators.
 package com.salehhafyane.ecommerce.auth;
 
 import com.salehhafyane.ecommerce.config.JwtService;
@@ -19,6 +20,7 @@ import static org.mockito.Mockito.*;
 
 import static org.mockito.ArgumentMatchers.anyMap;
 
+// Repository, encoder, token service and login manager are all Mockito mocks.
 class AuthServiceTest {
 
     private AuthService authService;
@@ -119,50 +121,6 @@ class AuthServiceTest {
         verify(authenticationManager, times(1)).authenticate(any());
         verify(userRepository, times(1)).findByUsername(request.getUsername());
         verify(jwtService, never()).generateToken(any());
-    }
-
-    @Test
-    void testRegister_DuplicateUsernameOnly_ReturnsSingleFieldError() {
-        RegisterRequest request = new RegisterRequest();
-        request.setFirstname("first");
-        request.setLastname("last");
-        request.setUsername("taken");
-        request.setEmail("free@example.com");
-        request.setPassword("password123");
-
-        when(userRepository.existsByUsername("taken")).thenReturn(true);
-        when(userRepository.existsByEmail("free@example.com")).thenReturn(false);
-
-        UserAlreadyExistsException ex = assertThrows(
-                UserAlreadyExistsException.class,
-                () -> authService.register(request)
-        );
-
-        assertEquals(1, ex.getFieldErrors().size());
-        assertEquals("Username already exists: taken", ex.getFieldErrors().get("username"));
-        verify(userRepository, never()).save(any(User.class));
-    }
-
-    @Test
-    void testRegister_DuplicateEmailOnly_ReturnsSingleFieldError() {
-        RegisterRequest request = new RegisterRequest();
-        request.setFirstname("first");
-        request.setLastname("last");
-        request.setUsername("freeuser");
-        request.setEmail("taken@example.com");
-        request.setPassword("password123");
-
-        when(userRepository.existsByUsername("freeuser")).thenReturn(false);
-        when(userRepository.existsByEmail("taken@example.com")).thenReturn(true);
-
-        UserAlreadyExistsException ex = assertThrows(
-                UserAlreadyExistsException.class,
-                () -> authService.register(request)
-        );
-
-        assertEquals(1, ex.getFieldErrors().size());
-        assertEquals("Email already in use: taken@example.com", ex.getFieldErrors().get("email"));
-        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test

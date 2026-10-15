@@ -1,3 +1,4 @@
+// Endpoint for the "My Orders" page: only the caller's own orders.
 package com.salehhafyane.ecommerce.controller;
 
 import com.salehhafyane.ecommerce.dto.OrderSummaryDTO;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// Requires authentication; the user id comes from the JWT, not from query params.
 @CrossOrigin
 @RestController
 @RequestMapping("/api/user/orders")
@@ -17,7 +19,7 @@ public class UserOrderController {
 
     private final OrderQueryService orderQueryService;
 
-    /** LIST – orders of the currently logged-in user, newest first. */
+    // GET /api/user/orders — the logged-in customer's order history, newest first.
     @GetMapping
     public List<OrderSummaryDTO> getMyOrders(@AuthenticationPrincipal User user) {
         return orderQueryService.getOrdersForUser(user.getId());
